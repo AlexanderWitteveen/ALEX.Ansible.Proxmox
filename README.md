@@ -1,1 +1,3 @@
-# ALEX.Ansible.Proxmox
+# Ansible Collection - Proxmox
+
+Documentation for the collection.
