@@ -2,7 +2,7 @@ namespace: alex
 
 name: proxmox
 
-version: 0.1.1
+version: 1.0.2
 ## TODO Autiomate using the build command
 
 readme: README.md
