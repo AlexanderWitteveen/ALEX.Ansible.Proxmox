@@ -1,0 +1,18 @@
+---
+
+- name: "Playbook: Rebuild VM"
+  gather_facts: false
+  become: true
+  hosts: "{{ args_dhcpipaddress }}"
+  vars:
+    ansible_connection: ssh
+    ansible_host: "{{ args_proxmox_host }}"
+
+  vars_files:
+    - /etc/ansible/inventory/vars.yml
+
+  roles:
+    - alex.proxmox.stopvm
+    - alex.proxmox.removevm
+    - alex.proxmox.addvm
+    - alex.proxmox.startvm

@@ -1,0 +1,12 @@
+---
+
+- name: Check VM exists
+  shell: 'qm status {{ args_proxmox_vmid }} >/dev/null 2>&1 ; echo $?'
+  register: vmresult
+  changed_when: 'false'
+
+- name: remove vm
+  shell: 'qm destroy {{ args_proxmox_vmid }} --skiplock --purge >/dev/null 2>&1 ; echo $?'
+  register: vmresult
+  changed_when: 'true'
+  when: '"0" in vmresult.stdout'

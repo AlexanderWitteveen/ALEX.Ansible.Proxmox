@@ -1,0 +1,22 @@
+---
+
+- name: Set network
+  shell: 'qm set {{ args_proxmox_vmid }} --net0 model=virtio,macaddr={{ args_vm_mac }},bridge=vmbr0,firewall=1,tag={{ args_vm_vlan }} >/dev/null 2>&1 ; echo $?'
+  register: result
+  changed_when: '"0" in result.stdout'
+
+- name: Set memory
+  shell: 'qm set {{ args_proxmox_vmid }} --memory {{ args_vm_memory }} >/dev/null 2>&1 ; echo $?'
+  register: result
+  changed_when: '"0" in result.stdout'
+
+- name: Set cores
+  shell: 'qm set {{ args_proxmox_vmid }} --cores {{ args_vm_cores }} >/dev/null 2>&1 ; echo $?'
+  register: result
+  changed_when: '"0" in result.stdout'
+
+- name: Set boot start
+  shell: 'qm set {{ args_proxmox_vmid }} --onboot {{ args_vm_start_boot }} >/dev/null 2>&1 ; echo $?'
+  register: result
+  changed_when: '"0" in result.stdout'
+

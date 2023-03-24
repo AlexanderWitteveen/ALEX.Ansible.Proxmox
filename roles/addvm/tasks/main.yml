@@ -1,0 +1,5 @@
+---
+
+- include_tasks: copy.vm.yml
+
+- include_tasks: set.vm.yml

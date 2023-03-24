@@ -1,0 +1,18 @@
+---
+
+- name: Check VM exists
+  shell: 'qm status {{ args_proxmox_vmid }} >/dev/null 2>&1 ; echo $?'
+  register: vmresult
+  changed_when: 'false'
+
+- name: Check template exists
+  shell: 'qm status {{ args_proxmox_template }} >/dev/null 2>&1 ; echo $?'
+  register: templateresult
+  changed_when: 'false'
+  failed_when: '"2" in templateresult.stdout'
+
+- name: Copy template
+  shell: 'qm clone {{ args_proxmox_template }} {{ args_proxmox_vmid }} --full --name {{ args_proxmox_name }} >/dev/null 2>&1 ; echo $?'
+  register: vmresult
+  changed_when: 'true'
+  when: '"2" in vmresult.stdout'
