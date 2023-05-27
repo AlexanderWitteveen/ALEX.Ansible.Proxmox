@@ -1,0 +1,12 @@
+---
+
+- name: "Playbook: Check Known Hosts"
+  hosts: "{{ args_host }}"
+  gather_facts: false
+  become: false
+
+  vars_files:
+    - /etc/ansible/inventory/vars.yml
+
+  roles:
+    - alex.proxmox.checkknownhosts

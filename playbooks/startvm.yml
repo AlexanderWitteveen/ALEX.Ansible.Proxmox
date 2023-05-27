@@ -1,9 +1,9 @@
 ---
 
 - name: "Playbook: Start VM"
+  hosts: "{{ args_host }}"
   gather_facts: false
   become: true
-  hosts: "{{ args_dhcpipaddress }}"
   vars:
     ansible_connection: ssh
     ansible_host: "{{ args_proxmox_host }}"
