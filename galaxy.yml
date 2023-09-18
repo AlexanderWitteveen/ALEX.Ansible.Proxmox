@@ -2,7 +2,7 @@ namespace: alex
 
 name: proxmox
 
-version: 1.2.14
+version: 1.2.15
 ## Do not change - version is update automatically during build
 
 readme: README.md
