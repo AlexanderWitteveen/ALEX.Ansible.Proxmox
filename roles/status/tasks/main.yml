@@ -18,10 +18,12 @@
         echo TEMPLATE
       fi
     fi
+  args:
+    executable: /bin/bash
   register: vmstatusresult
   changed_when: 'false'
   failed_when: '"NOTIMPLEMENTED" in vmstatusresult.stdout'
   vars:
     ansible_connection: ssh
-    ansible_host: "{{ args_proxmox_host }}"
+    ansible_host: "{{ prop_proxmox_host }}"
   become: true

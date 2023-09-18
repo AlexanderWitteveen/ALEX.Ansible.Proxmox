@@ -2,16 +2,18 @@
 
 - name: start vm
   shell: |
-    qm start {{ args_vmid }}
+    qm start {{ prop_proxmox_vmid }}
     if [ "$?" -eq "0" ]; then
       echo "CHANGED"
     else
       echo "FAILED"
     fi
+  args:
+    executable: /bin/bash
   register: result
   changed_when: '"CHANGED" in result.stdout'
   failed_when: '"FAILED" in result.stdout'
   vars:
     ansible_connection: ssh
-    ansible_host: "{{ args_proxmox_host }}"
+    ansible_host: "{{ prop_proxmox_host }}"
   become: true

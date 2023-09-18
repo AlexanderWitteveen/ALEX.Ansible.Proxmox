@@ -11,9 +11,5 @@
     - name: alex.proxmox.status
       vars:
         args_vmid: "{{ prop_proxmox_vmid }}"
-        args_proxmox_host: "{{ prop_proxmox_host }}"
     - name: alex.proxmox.shutdownvm
-      vars:
-        args_vmid: "{{ prop_proxmox_vmid }}"
-        args_proxmox_host: "{{ prop_proxmox_host }}"
       when: '"RUNNING" in vmstatusresult.stdout'
