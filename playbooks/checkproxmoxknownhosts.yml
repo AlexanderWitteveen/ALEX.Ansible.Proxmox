@@ -9,4 +9,6 @@
     - /etc/ansible/inventory/vars.yml
 
   roles:
-    - alex.proxmox.checkknownhosts
+    - name: alex.preinstall.knownhost
+      vars:
+        args_ipaddress: "{{ args_proxmox_host }}"

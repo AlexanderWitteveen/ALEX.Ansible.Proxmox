@@ -1,8 +1,13 @@
 ---
 
-- name: start vm
+- name: shutdown vm
   shell: |
-    qm start {{ args_vmid }}
+    qm shutdown {{ args_vmid }} --skiplock --forceStop
+    if [ "$?" -ne "0" ]; then
+      echo "FAILED"
+      exit 1
+    fi
+    qm wait {{ args_vmid }}
     if [ "$?" -eq "0" ]; then
       echo "CHANGED"
     else

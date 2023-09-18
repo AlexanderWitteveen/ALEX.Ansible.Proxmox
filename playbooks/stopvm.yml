@@ -12,4 +12,10 @@
     - /etc/ansible/inventory/vars.yml
 
   roles:
-    - alex.proxmox.stopvm
+    - name: alex.proxmox.status
+      vars:
+        args_vmid: "{{ args_proxmox_vmid }}"
+    - name: alex.proxmox.stopvm
+      vars:
+        args_vmid: "{{ args_proxmox_vmid }}"
+      when: '"RUNNING" in vmstatusresult.stdout'

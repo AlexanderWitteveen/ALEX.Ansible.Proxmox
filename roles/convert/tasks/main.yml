@@ -1,8 +1,8 @@
 ---
 
-- name: start vm
+- name: convert vm to template
   shell: |
-    qm start {{ args_vmid }}
+    qm template {{ args_vmid }}
     if [ "$?" -eq "0" ]; then
       echo "CHANGED"
     else
@@ -11,3 +11,4 @@
   register: result
   changed_when: '"CHANGED" in result.stdout'
   failed_when: '"FAILED" in result.stdout'
+

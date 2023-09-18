@@ -1,6 +1,6 @@
 ---
 
-- name: "Playbook: Start VM"
+- name: "Playbook: Shutdown VM"
   hosts: "{{ args_host }}"
   gather_facts: false
   become: true
@@ -15,7 +15,7 @@
     - name: alex.proxmox.status
       vars:
         args_vmid: "{{ args_proxmox_vmid }}"
-      failed_when: '"NOTEXIST" in vmstatusresult.stdout'
-    - name: alex.proxmox.startvm
+    - name: alex.proxmox.shutdownvm
       vars:
         args_vmid: "{{ args_proxmox_vmid }}"
+      when: '"RUNNING" in vmstatusresult.stdout'

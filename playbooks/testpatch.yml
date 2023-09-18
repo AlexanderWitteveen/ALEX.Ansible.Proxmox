@@ -1,6 +1,6 @@
 ---
 
-- name: "Playbook: Rebuild VM"
+- name: "Playbook: Test PATCH"
   hosts: "{{ args_host }}"
   gather_facts: false
   become: true
@@ -25,12 +25,21 @@
       when: '"NOTEXIST" not in vmstatusresult.stdout'
     - name: alex.proxmox.status
       vars:
-        args_vmid: "{{ args_proxmox_template }}"
+        args_vmid: "{{ args_proxmox_parent_vmid }}"
       failed_when: '"NOTEXIST" not in vmstatusresult.stdout'
     - name: alex.proxmox.addvm
       vars:
         args_vmid: "{{ args_proxmox_vmid }}"
-        args_template: "{{ args_proxmox_template }}"
+        args_template: "{{ args_proxmox_parent_vmid }}"
     - name: alex.proxmox.startvm
+      vars:
+        args_vmid: "{{ args_proxmox_vmid }}"
+    - name: alex.preinstall.waitstarted
+      vars:
+        args_ipaddress: "{{  }}"
+    - name: alex.proxmox.shutdownvm
+      vars:
+        args_vmid: "{{ args_proxmox_vmid }}"
+    - name: alex.proxmox.convert
       vars:
         args_vmid: "{{ args_proxmox_vmid }}"

@@ -12,5 +12,14 @@
     - /etc/ansible/inventory/vars.yml
 
   roles:
-    - alex.proxmox.stopvm
-    - alex.proxmox.removevm
+    - name: alex.proxmox.status
+      vars:
+        args_vmid: "{{ args_proxmox_vmid }}"
+    - name: alex.proxmox.stopvm
+      vars:
+        args_vmid: "{{ args_proxmox_vmid }}"
+      when: '"RUNNING" in vmstatusresult.stdout'
+    - name: alex.proxmox.removevm
+      vars:
+        args_vmid: "{{ args_proxmox_vmid }}"
+      when: '"NOTEXIST" not in vmstatusresult.stdout'

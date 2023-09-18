@@ -12,4 +12,11 @@
     - /etc/ansible/inventory/vars.yml
 
   roles:
-    - alex.proxmox.addvm
+    - name: alex.proxmox.status
+      vars:
+        args_vmid: "{{ args_proxmox_template }}"
+      failed_when: '"NOTEXIST" not in vmstatusresult.stdout'
+    - name: alex.proxmox.addvm
+      vars:
+        args_vmid: "{{ args_proxmox_vmid }}"
+        args_template: "{{ args_proxmox_template }}"

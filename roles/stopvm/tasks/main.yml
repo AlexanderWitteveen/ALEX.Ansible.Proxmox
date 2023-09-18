@@ -1,3 +1,13 @@
 ---
 
-- include_tasks: stop.vm.yml
+- name: stop vm
+  shell: |
+    qm stop {{ args_vmid }} --skiplock
+    if [ "$?" -eq "0" ]; then
+      echo "CHANGED"
+    else
+      echo "FAILED"
+    fi
+  register: result
+  changed_when: '"CHANGED" in result.stdout'
+  failed_when: '"FAILED" in result.stdout'
