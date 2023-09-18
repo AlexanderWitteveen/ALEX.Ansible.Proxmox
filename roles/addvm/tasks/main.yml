@@ -3,6 +3,9 @@
 - name: Copy template
   shell: |
     qm clone {{ args_template }} {{ args_vmid }} --full --name "{{ args_proxmox_name }}"
+    qm set {{ args_vmid }} --description "{{ args_hostname }}  
+    {{ args_description }}  
+    {{ args_ipaddress }}"
     if [ "$?" -eq "0" ]; then
       echo "CHANGED"
     else
@@ -62,4 +65,3 @@
   shell: 'qm set {{ args_vmid }} --onboot {{ args_vm_start_boot }} >/dev/null 2>&1 ; echo $?'
   register: result
   changed_when: '"0" in result.stdout'
-
