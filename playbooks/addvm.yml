@@ -3,10 +3,6 @@
 - name: "Playbook: Add VM"
   hosts: "{{ args_host }}"
   gather_facts: false
-  become: true
-  vars:
-    ansible_connection: ssh
-    ansible_host: "{{ args_proxmox_host }}"
 
   vars_files:
     - /etc/ansible/inventory/vars.yml

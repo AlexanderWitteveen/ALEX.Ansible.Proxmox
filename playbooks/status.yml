@@ -1,6 +1,6 @@
 ---
 
-- name: "Playbook: Shutdown VM"
+- name: "Playbook: Get Status from VM/Template"
   hosts: "{{ args_host }}"
   gather_facts: false
 
@@ -11,7 +11,5 @@
     - name: alex.proxmox.status
       vars:
         args_vmid: "{{ args_proxmox_vmid }}"
-    - name: alex.proxmox.shutdownvm
-      vars:
-        args_vmid: "{{ args_proxmox_vmid }}"
-      when: '"RUNNING" in vmstatusresult.stdout'
+      failed_when: '"NOTEXIST" not in vmstatusresult.stdout'
+

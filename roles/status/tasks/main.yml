@@ -1,7 +1,9 @@
 ---
 
-- name: Check VM exists
+- name: Get VM/Template status
   shell: |
+    echo "{{ args_ipaddress }}"
+    echo "{{ args_vmid }}"
     status=$(qm status {{ args_vmid }} 2> /dev/null )
     if [ $? -ne 0 ] ; then
       echo NOTEXIST
@@ -21,3 +23,7 @@
   register: vmstatusresult
   changed_when: 'false'
   failed_when: '"NOTIMPLEMENTED" in vmstatusresult.stdout'
+  vars:
+    ansible_connection: ssh
+    ansible_host: "{{ args_proxmox_host }}"
+  become: true

@@ -14,6 +14,10 @@
   register: result
   changed_when: '"CHANGED" in result.stdout'
   failed_when: '"FAILED" in result.stdout'
+  vars:
+    ansible_connection: ssh
+    ansible_host: "{{ args_proxmox_host }}"
+  become: true
 
 - name: Set network1
   shell: |
@@ -32,6 +36,10 @@
   register: result
   changed_when: '"CHANGED" in result.stdout'
   failed_when: '"FAILED" in result.stdout'
+  vars:
+    ansible_connection: ssh
+    ansible_host: "{{ args_proxmox_host }}"
+  become: true
 
 - name: Set network2
   shell: |
@@ -50,18 +58,34 @@
   register: result
   changed_when: '"CHANGED" in result.stdout'
   failed_when: '"FAILED" in result.stdout'
+  vars:
+    ansible_connection: ssh
+    ansible_host: "{{ args_proxmox_host }}"
+  become: true
 
 - name: Set memory
   shell: 'qm set {{ args_vmid }} --memory {{ args_vm_memory }} >/dev/null 2>&1 ; echo $?'
   register: result
   changed_when: '"0" in result.stdout'
+  vars:
+    ansible_connection: ssh
+    ansible_host: "{{ args_proxmox_host }}"
+  become: true
 
 - name: Set cores
   shell: 'qm set {{ args_vmid }} --cores {{ args_vm_cores }} >/dev/null 2>&1 ; echo $?'
   register: result
   changed_when: '"0" in result.stdout'
+  vars:
+    ansible_connection: ssh
+    ansible_host: "{{ args_proxmox_host }}"
+  become: true
 
 - name: Set boot start
   shell: 'qm set {{ args_vmid }} --onboot {{ args_vm_start_boot }} >/dev/null 2>&1 ; echo $?'
   register: result
   changed_when: '"0" in result.stdout'
+  vars:
+    ansible_connection: ssh
+    ansible_host: "{{ args_proxmox_host }}"
+  become: true
