@@ -3,7 +3,7 @@
 - name: Copy template
   shell: |
     qm clone {{ args_template }} {{ args_vmid }} --full --name "{{ args_proxmox_name }}"
-    qm set {{ args_vmid }} --description "{{ args_hostname }}  
+    qm set {{ args_vmid }} --agent enabled=1 --description "{{ args_hostname }}  
     {{ args_description }}  
     {{ args_ipaddress }}"
     if [ "$?" -eq "0" ]; then
