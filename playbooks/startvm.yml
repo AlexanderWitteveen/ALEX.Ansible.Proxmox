@@ -10,8 +10,10 @@
   roles:
     - name: alex.proxmox.status
       vars:
-        args_vmid: "{{ args_proxmox_vmid }}"
+        args_vmid: "{{ prop_proxmox_vmid }}"
+        args_proxmox_host: "{{ prop_proxmox_host }}"
       failed_when: '"NOTEXIST" in vmstatusresult.stdout'
     - name: alex.proxmox.startvm
       vars:
-        args_vmid: "{{ args_proxmox_vmid }}"
+        args_vmid: "{{ prop_proxmox_vmid }}"
+        args_proxmox_host: "{{ prop_proxmox_host }}"

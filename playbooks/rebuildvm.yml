@@ -10,23 +10,40 @@
   roles:
     - name: alex.proxmox.status
       vars:
-        args_vmid: "{{ args_proxmox_vmid }}"
+        args_vmid: "{{ prop_proxmox_vmid }}"
+        args_proxmox_host: "{{ prop_proxmox_host }}"
     - name: alex.proxmox.stopvm
       vars:
-        args_vmid: "{{ args_proxmox_vmid }}"
+        args_vmid: "{{ prop_proxmox_vmid }}"
+        args_proxmox_host: "{{ prop_proxmox_host }}"
       when: '"RUNNING" in vmstatusresult.stdout'
     - name: alex.proxmox.removevm
       vars:
-        args_vmid: "{{ args_proxmox_vmid }}"
+        args_vmid: "{{ prop_proxmox_vmid }}"
+        args_proxmox_host: "{{ prop_proxmox_host }}"
       when: '"NOTEXIST" not in vmstatusresult.stdout'
     - name: alex.proxmox.status
       vars:
-        args_vmid: "{{ args_proxmox_template }}"
+        args_vmid: "{{ prop_proxmox_template }}"
+        args_proxmox_host: "{{ prop_proxmox_host }}"
       failed_when: '"NOTEXIST" not in vmstatusresult.stdout'
     - name: alex.proxmox.addvm
       vars:
-        args_vmid: "{{ args_proxmox_vmid }}"
-        args_template: "{{ args_proxmox_template }}"
+        args_vmid: "{{ prop_proxmox_vmid }}"
+        args_proxmox_host: "{{ prop_proxmox_host }}"
+        args_template: "{{ prop_proxmox_template }}"
+        args_proxmox_name: "{{ prop_proxmox_name }}"
+        args_hostname: "{{ prop_hostname }}"
+        args_description: "{{ prop_description }}"
+        args_ipaddress: "{{ prop_ipaddress }}"
+        args_vm_mac: "{{ prop_vm_mac }}"
+        args_vm_vlan: "{{ prop_vm_vlan }}"
+        args_vm_mac2: "{{ prop_vm_mac2 }}"
+        args_vm_vlan2: "{{ prop_vm_vlan2 }}"
+        args_vm_memory: "{{ prop_vm_memory }}"
+        args_vm_cores: "{{ prop_vm_cores }}"
+        args_vm_start_boot: "{{ prop_vm_start_boot }}"
     - name: alex.proxmox.startvm
       vars:
-        args_vmid: "{{ args_proxmox_vmid }}"
+        args_vmid: "{{ prop_proxmox_vmid }}"
+        args_proxmox_host: "{{ prop_proxmox_host }}"
