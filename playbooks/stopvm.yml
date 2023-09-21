@@ -1,15 +1,15 @@
 ---
 
-- name: "Playbook: Stop VM"
+- name: "Playbook: Stop [{{ args_host }}]"
   hosts: "{{ args_host }}"
   gather_facts: false
 
   vars_files:
     - /etc/ansible/inventory/vars.yml
 
-  roles:
-    - name: alex.proxmox.status
+  tasks:
+    - ansible.builtin.include_role:
+        name: alex.proxmox.stop
       vars:
-        args_vmid: "{{ prop_proxmox_vmid }}"
-    - name: alex.proxmox.stopvm
-      when: '"RUNNING" in vmstatusresult.stdout'
+        args_stop_vmid: "{{ prop_proxmox_vmid }}"
+        args_stop_host: "{{ prop_proxmox_host }}"

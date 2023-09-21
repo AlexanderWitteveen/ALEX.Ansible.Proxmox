@@ -1,0 +1,15 @@
+---
+
+- name: "Playbook: Status [{{ args_host }}]"
+  hosts: "{{ args_host }}"
+  gather_facts: false
+
+  vars_files:
+    - /etc/ansible/inventory/vars.yml
+
+  tasks:
+    - ansible.builtin.include_role:
+        name: alex.proxmox.status
+      vars:
+        args_status_vmid: "{{ prop_proxmox_vmid }}"
+        args_status_host: "{{ prop_proxmox_host }}"

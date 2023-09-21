@@ -1,15 +1,15 @@
 ---
 
-- name: "Playbook: Shutdown VM"
+- name: "Playbook: Shutdown [{{ args_host }}]"
   hosts: "{{ args_host }}"
   gather_facts: false
 
   vars_files:
     - /etc/ansible/inventory/vars.yml
 
-  roles:
-    - name: alex.proxmox.status
+  tasks:
+    - ansible.builtin.include_role:
+        name: alex.proxmox.shutdown
       vars:
-        args_vmid: "{{ prop_proxmox_vmid }}"
-    - name: alex.proxmox.shutdownvm
-      when: '"RUNNING" in vmstatusresult.stdout'
+        args_shutdown_vmid: "{{ prop_proxmox_vmid }}"
+        args_shutdown_host: "{{ prop_proxmox_host }}"

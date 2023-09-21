@@ -1,0 +1,15 @@
+---
+
+- name: "Playbook: Convert [{{ args_host }}]"
+  hosts: "{{ args_host }}"
+  gather_facts: false
+
+  vars_files:
+    - /etc/ansible/inventory/vars.yml
+
+  tasks:
+    - ansible.builtin.include_role:
+        name: alex.proxmox.convert
+      vars:
+        args_convert_vmid: "{{ prop_proxmox_vmid }}"
+        args_convert_host: "{{ prop_proxmox_host }}"

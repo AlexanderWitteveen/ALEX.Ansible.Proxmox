@@ -1,0 +1,31 @@
+---
+
+- ansible.builtin.include_role:
+    name: alex.proxmox.remove
+  vars:
+    args_remove_vmid: "{{ args_rebuild_vmid }}"
+    args_remove_host: "{{ args_rebuild_host }}"
+
+- ansible.builtin.include_role:
+    name: alex.proxmox.add
+  vars:
+    args_add_vmid: "{{ args_rebuild_vmid }}"
+    args_add_host: "{{ args_rebuild_host }}"
+    args_add_templateid: "{{ args_rebuild_templateid }}"
+    args_add_name: "{{ args_rebuild_name }}"
+    args_add_hostname: "{{ args_rebuild_hostname }}"
+    args_add_description: "{{ args_rebuild_description }}"
+    args_add_ipaddress: "{{ args_rebuild_ipaddress }}"
+    args_add_mac: "{{ args_rebuild_mac }}"
+    args_add_vlan: "{{ args_rebuild_vlan }}"
+    args_add_mac2: "{{ args_rebuild_mac2 | default('0') }}"
+    args_add_vlan2: "{{ args_rebuild_vlan2 | default('0')}}"
+    args_add_memory: "{{ args_rebuild_memory }}"
+    args_add_cores: "{{ args_rebuild_cores }}"
+    args_add_start_boot: "{{ args_rebuild_start_boot }}"
+
+- ansible.builtin.include_role:
+    name: alex.proxmox.start
+  vars:
+    args_start_vmid: "{{ args_rebuild_vmid }}"
+    args_start_host: "{{ args_rebuild_host }}"

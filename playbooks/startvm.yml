@@ -1,15 +1,15 @@
 ---
 
-- name: "Playbook: Start VM"
+- name: "Playbook: Start [{{ args_host }}]"
   hosts: "{{ args_host }}"
   gather_facts: false
 
   vars_files:
     - /etc/ansible/inventory/vars.yml
 
-  roles:
-    - name: alex.proxmox.status
+  tasks:
+    - ansible.builtin.include_role:
+        name: alex.proxmox.start
       vars:
-        args_vmid: "{{ prop_proxmox_vmid }}"
-      failed_when: '"NOTEXIST" in vmstatusresult.stdout'
-    - name: alex.proxmox.startvm
+        args_start_vmid: "{{ prop_proxmox_vmid }}"
+        args_start_host: "{{ prop_proxmox_host }}"
