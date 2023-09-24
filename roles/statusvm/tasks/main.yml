@@ -1,8 +1,8 @@
 ---
 
-- name: Status [{{ args_status_vmid }}]
+- name: Status [{{ prop_proxmox_vmid }}]
   shell: |
-    status=$(qm status {{ args_status_vmid }} 2> /dev/null )
+    status=$(qm status {{ prop_proxmox_vmid }} 2> /dev/null )
     if [ $? -ne 0 ] ; then
       echo NOTEXIST
     else
@@ -13,7 +13,7 @@
       else
         echo NOTIMPLEMENTED
       fi
-      template=$(qm config {{ args_status_vmid }} 2> /dev/null | grep template | wc -l)
+      template=$(qm config {{ prop_proxmox_vmid }} 2> /dev/null | grep template | wc -l)
       if [ $template -eq 1 ] ; then
         echo TEMPLATE
       fi
@@ -25,5 +25,5 @@
   failed_when: '"NOTIMPLEMENTED" in result_status.stdout'
   vars:
     ansible_connection: ssh
-    ansible_host: "{{ args_status_host }}"
+    ansible_host: "{{ prop_proxmox_host }}"
   become: true

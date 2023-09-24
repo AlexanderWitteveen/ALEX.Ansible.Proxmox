@@ -10,6 +10,3 @@
   tasks:
     - ansible.builtin.include_role:
         name: alex.proxmox.remove
-      vars:
-        args_remove_vmid: "{{ prop_proxmox_vmid }}"
-        args_remove_host: "{{ prop_proxmox_host }}"

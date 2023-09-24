@@ -9,7 +9,7 @@
 
   vars_files:
     - /etc/ansible/inventory/vars.yml
-
+******************** NOT UPDATES **************************
   roles:
     - role: alex.proxmox.checkknownhosts
       vars:

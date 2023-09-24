@@ -1,0 +1,29 @@
+---
+
+- name: Status [{{ prop_proxmox_templateid }}]
+  shell: |
+    status=$(qm status {{ prop_proxmox_templateid }} 2> /dev/null )
+    if [ $? -ne 0 ] ; then
+      echo NOTEXIST
+    else
+      if [ $( echo $status | grep "running" | wc -l ) -eq 1 ] ; then
+        echo RUNNING
+      elif [ $( echo $status | grep "stopped" | wc -l ) -eq 1 ] ; then
+        echo STOPPED
+      else
+        echo NOTIMPLEMENTED
+      fi
+      template=$(qm config {{ prop_proxmox_templateid }} 2> /dev/null | grep template | wc -l)
+      if [ $template -eq 1 ] ; then
+        echo TEMPLATE
+      fi
+    fi
+  args:
+    executable: /bin/bash
+  register: result_status
+  changed_when: 'false'
+  failed_when: '"NOTIMPLEMENTED" in result_status.stdout'
+  vars:
+    ansible_connection: ssh
+    ansible_host: "{{ prop_proxmox_host }}"
+  become: true

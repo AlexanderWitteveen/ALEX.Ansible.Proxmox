@@ -10,6 +10,3 @@
   tasks:
     - ansible.builtin.include_role:
         name: alex.proxmox.start
-      vars:
-        args_start_vmid: "{{ prop_proxmox_vmid }}"
-        args_start_host: "{{ prop_proxmox_host }}"

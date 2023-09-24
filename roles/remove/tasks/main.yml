@@ -2,13 +2,10 @@
 
 - ansible.builtin.include_role:
     name: alex.proxmox.stop
-  vars:
-    args_stop_vmid: "{{ args_remove_vmid }}"
-    args_stop_host: "{{ args_remove_host }}"
 
-- name: Remove [{{ args_remove_vmid }}]
+- name: Remove [{{ prop_proxmox_vmid }}]
   shell: |
-    qm destroy {{ args_remove_vmid }} --skiplock --purge
+    qm destroy {{ prop_proxmox_vmid }} --skiplock --purge
     if [ "$?" -eq "0" ]; then
       echo "CHANGED"
     else
@@ -22,5 +19,5 @@
   failed_when: '"FAILED" in result.stdout'
   vars:
     ansible_connection: ssh
-    ansible_host: "{{ args_remove_host }}"
+    ansible_host: "{{ prop_proxmox_host }}"
   become: true

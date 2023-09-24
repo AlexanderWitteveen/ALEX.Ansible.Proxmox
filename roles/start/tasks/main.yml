@@ -1,14 +1,11 @@
 ---
 
 - ansible.builtin.include_role:
-    name: alex.proxmox.status
-  vars:
-    args_status_vmid: "{{ args_start_vmid }}"
-    args_status_host: "{{ args_start_host }}"
+    name: alex.proxmox.statusvm
 
-- name: start vm [{{ args_start_vmid }}]
+- name: start vm [{{ prop_proxmox_vmid }}]
   shell: |
-    qm start {{ args_start_vmid }}
+    qm start {{ prop_proxmox_vmid }}
     if [ "$?" -eq "0" ]; then
       echo "CHANGED"
     else
@@ -22,5 +19,5 @@
   failed_when: '"FAILED" in result.stdout'
   vars:
     ansible_connection: ssh
-    ansible_host: "{{ args_start_host }}"
+    ansible_host: "{{ prop_proxmox_host }}"
   become: true

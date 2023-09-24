@@ -10,6 +10,3 @@
   tasks:
     - ansible.builtin.include_role:
         name: alex.proxmox.convert
-      vars:
-        args_convert_vmid: "{{ prop_proxmox_vmid }}"
-        args_convert_host: "{{ prop_proxmox_host }}"

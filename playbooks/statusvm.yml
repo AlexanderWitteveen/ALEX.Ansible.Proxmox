@@ -9,7 +9,4 @@
 
   tasks:
     - ansible.builtin.include_role:
-        name: alex.proxmox.status
-      vars:
-        args_status_vmid: "{{ prop_proxmox_vmid }}"
-        args_status_host: "{{ prop_proxmox_host }}"
+        name: alex.proxmox.statusvm

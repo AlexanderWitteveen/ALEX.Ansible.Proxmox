@@ -10,19 +10,3 @@
   tasks:
     - ansible.builtin.include_role:
         name: alex.proxmox.rebuild
-      vars:
-        args_rebuild_vmid: "{{ prop_proxmox_vmid }}"
-        args_rebuild_host: "{{ prop_proxmox_host }}"
-        args_rebuild_templateid: "{{ prop_proxmox_template }}"
-        args_rebuild_name: "{{ prop_proxmox_name }}"
-        args_rebuild_hostname: "{{ prop_hostname }}"
-        args_rebuild_description: "{{ prop_description }}"
-        args_rebuild_ipaddress: "{{ prop_ipaddress }}"
-        args_rebuild_mac: "{{ prop_vm_mac }}"
-        args_rebuild_vlan: "{{ prop_vm_vlan }}"
-        args_rebuild_mac2: "{{ prop_vm_mac2 | default('0') }}"
-        args_rebuild_vlan2: "{{ prop_vm_vlan2 | default('0')}}"
-        args_rebuild_memory: "{{ prop_vm_memory }}"
-        args_rebuild_cores: "{{ prop_vm_cores }}"
-        args_rebuild_start_boot: "{{ prop_vm_start_boot }}"
-

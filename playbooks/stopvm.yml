@@ -10,6 +10,3 @@
   tasks:
     - ansible.builtin.include_role:
         name: alex.proxmox.stop
-      vars:
-        args_stop_vmid: "{{ prop_proxmox_vmid }}"
-        args_stop_host: "{{ prop_proxmox_host }}"

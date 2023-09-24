@@ -10,18 +10,3 @@
   tasks:
     - ansible.builtin.include_role:
         name: alex.proxmox.add
-      vars:
-        args_add_host: "{{ prop_proxmox_host }}"
-        args_add_vmid: "{{ prop_proxmox_vmid }}"
-        args_add_templateid: "{{ prop_proxmox_template }}"
-        args_add_name: "{{ prop_proxmox_name }}"
-        args_add_hostname: "{{ prop_hostname }}"
-        args_add_description: "{{ prop_description }}"
-        args_add_ipaddress: "{{ prop_ipaddress }}"
-        args_add_mac: "{{ prop_vm_mac }}"
-        args_add_vlan: "{{ prop_vm_vlan }}"
-        args_add_mac2: "{{ prop_vm_mac2 | default('0') }}"
-        args_add_vlan2: "{{ prop_vm_vlan2 | default('0')}}"
-        args_add_memory: "{{ prop_vm_memory }}"
-        args_add_cores: "{{ prop_vm_cores }}"
-        args_add_start_boot: "{{ prop_vm_start_boot }}"
