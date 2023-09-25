@@ -17,7 +17,11 @@
     - name: Copy template [{{ prop_proxmox_templateid }},{{ prop_proxmox_vmid }}]
       shell: |
         qm clone {{ prop_proxmox_templateid }} {{ prop_proxmox_vmid }} --full --name "{{ prop_proxmox_name }}"
-        qm set {{ prop_proxmox_vmid }} --agent enabled=1 --description $'# {{ prop_hostname }}  \n{{ prop_description }}  \n{{ prop_ipaddress }}'
+        date=$(date)
+        description=$'# {{ prop_hostname }}  \n{{ prop_description }}  \n{{ prop_ipaddress }}  \n'
+        description+=$(date)
+        qm set {{ prop_proxmox_vmid }} --agent enabled=1 --description "$description"
+        #qm set {{ prop_proxmox_vmid }} --agent enabled=1 --description $'# {{ prop_hostname }}  \n{{ prop_description }}  \n{{ prop_ipaddress }}  \n$date'
         if [ "$?" -eq "0" ]; then
           echo "CHANGED"
         else
