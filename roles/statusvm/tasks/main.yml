@@ -13,7 +13,7 @@
       else
         echo NOTIMPLEMENTED
       fi
-      template=$(qm config {{ prop_proxmox_vmid }} 2> /dev/null | grep template | wc -l)
+      template=$(qm config {{ prop_proxmox_vmid }} 2> /dev/null | grep "^template:" | wc -l)
       if [ $template -eq 1 ] ; then
         echo TEMPLATE
       fi
