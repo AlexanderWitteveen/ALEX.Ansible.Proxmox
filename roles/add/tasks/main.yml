@@ -35,37 +35,61 @@
         ansible_host: "{{ prop_proxmox_host }}"
       become: true
 
-    - name: Set network1 [{{ prop_proxmox_vmid }}]
-      shell: |
-        net=model=virtio,macaddr={{ prop_vm_mac }},bridge=vmbr0,firewall=1
-        if [ "{{ prop_vm_vlan }}" -gt "0" ]; then
-          net=$net,tag={{ prop_vm_vlan }}
-        fi
-        echo $net
-        qm set {{ prop_proxmox_vmid }} --net0 $net
-        if [ "$?" -eq "0" ]; then
-          echo "CHANGED"
-        else
-          echo "FAILED"
-        fi
-      args:
-        executable: /bin/bash
-      register: result
-      changed_when: '"CHANGED" in result.stdout'
-      failed_when: '"FAILED" in result.stdout'
-      vars:
-        ansible_connection: ssh
-        ansible_host: "{{ prop_proxmox_host }}"
-      become: true
+#    - name: Set network1 [{{ prop_proxmox_vmid }}]
+#      shell: |
+#        net=model=virtio,macaddr={{ prop_vm_mac }},bridge=vmbr0,firewall=1
+#        if [ "{{ prop_vm_vlan }}" -gt "0" ]; then
+#          net=$net,tag={{ prop_vm_vlan }}
+#        fi
+#        echo $net
+#        qm set {{ prop_proxmox_vmid }} --net0 $net
+#        if [ "$?" -eq "0" ]; then
+#          echo "CHANGED"
+#        else
+#          echo "FAILED"
+#        fi
+#      args:
+#        executable: /bin/bash
+#      register: result
+#      changed_when: '"CHANGED" in result.stdout'
+#      failed_when: '"FAILED" in result.stdout'
+#      vars:
+#        ansible_connection: ssh
+#        ansible_host: "{{ prop_proxmox_host }}"
+#      become: true
 
-    - name: Set network2 [{{ prop_proxmox_vmid }}]
+#    - name: Set network2 [{{ prop_proxmox_vmid }}]
+#      shell: |
+#        net=model=virtio,macaddr={{ prop_vm_mac2 }},bridge=vmbr0,firewall=1
+#        if [ "{{ prop_vm_vlan2 | default('0') }}" -gt "0" ]; then
+#          net=$net,tag={{ prop_vm_vlan2 }}
+#        fi
+#        echo $net
+#        qm set {{ prop_proxmox_vmid }} --net1 $net
+#        if [ "$?" -eq "0" ]; then
+#          echo "CHANGED"
+#        else
+#          echo "FAILED"
+#        fi
+#      args:
+#        executable: /bin/bash
+#      register: result
+#      when: 'prop_vm_mac2 != "0"'
+#      changed_when: '"CHANGED" in result.stdout'
+#      failed_when: '"FAILED" in result.stdout'
+#      vars:
+#        ansible_connection: ssh
+#        ansible_host: "{{ prop_proxmox_host }}"
+#      become: true
+
+    - name: Set networks [{{ prop_proxmox_vmid }}]
       shell: |
-        net=model=virtio,macaddr={{ prop_vm_mac2 }},bridge=vmbr0,firewall=1
-        if [ "{{ prop_vm_vlan2 | default('0') }}" -gt "0" ]; then
-          net=$net,tag={{ prop_vm_vlan2 }}
+        net=model=virtio,macaddr={{ item.mac }},bridge=vmbr0,firewall=1
+        if [ "{{ item.vlan }}" -gt "0" ]; then
+          net=$net,tag={{ item.vlan }}
         fi
         echo $net
-        qm set {{ prop_proxmox_vmid }} --net1 $net
+        qm set {{ prop_proxmox_vmid }} --{{ item.name }} $net
         if [ "$?" -eq "0" ]; then
           echo "CHANGED"
         else
@@ -74,13 +98,14 @@
       args:
         executable: /bin/bash
       register: result
-      when: 'prop_vm_mac2 != "0"'
+      loop: "{{ prop_vm_network }}"
       changed_when: '"CHANGED" in result.stdout'
       failed_when: '"FAILED" in result.stdout'
       vars:
         ansible_connection: ssh
         ansible_host: "{{ prop_proxmox_host }}"
       become: true
+  
 
     - name: Set memory [{{ prop_proxmox_vmid }}]
       shell: |
