@@ -1,10 +1,20 @@
 ---
 
-- ansible.builtin.include_role:
+- ansible.builtin.include_role: # knownhost
+    name: alex.base.knownproxmoxhost
+
+- ansible.builtin.include_role: # remove vm
     name: alex.proxmox.remove
 
-- ansible.builtin.include_role:
+- ansible.builtin.include_role: # add vm
     name: alex.proxmox.add
 
-- ansible.builtin.include_role:
+- ansible.builtin.include_role: # start vm
     name: alex.proxmox.start
+
+- ansible.builtin.include_role: # waitstarted
+    name: alex.base.waitstarted
+
+- ansible.builtin.include_role: # knownhost
+    name: alex.base.knownoshost
+
