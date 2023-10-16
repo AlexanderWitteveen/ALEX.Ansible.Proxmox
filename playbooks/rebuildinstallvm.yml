@@ -9,5 +9,4 @@
 
   tasks:
     - ansible.builtin.include_role:
-        name: alex.proxmox.rebuild
-        
+        name: alex.proxmox.rebuildinstall
