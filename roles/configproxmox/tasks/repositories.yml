@@ -4,13 +4,25 @@
   ansible.builtin.apt_repository:
     repo: deb https://enterprise.proxmox.com/debian/pve bullseye pve-enterprise
     state: absent
+  vars:
+    ansible_connection: ssh
+    ansible_host: "{{ prop_ipaddress }}"
+  become: true
 
 - name: Remove specified repository into sources list
   ansible.builtin.apt_repository:
     repo: deb http://download.proxmox.com/debian/ceph-pacific bullseye main
     state: absent
+  vars:
+    ansible_connection: ssh
+    ansible_host: "{{ prop_ipaddress }}"
+  become: true
 
 - name: Add specified repository into sources list
   ansible.builtin.apt_repository:
     repo: deb http://download.proxmox.com/debian/pve bullseye pve-no-subscription
     state: present
+  vars:
+    ansible_connection: ssh
+    ansible_host: "{{ prop_ipaddress }}"
+  become: true

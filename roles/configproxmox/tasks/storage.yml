@@ -1,0 +1,26 @@
+---
+
+- name: Create CIFS storage
+  shell: |
+    status=$(pvesm status | grep {{ item.name }} | wc -l)
+    if [ $status -eq 0 ] ; then
+      echo "create"
+      pvesm add cifs {{ item.name }} -server {{ item.ipaddress }} -username {{ prop_admin_username }} -password {{ prop_admin_password }} -share {{ item.share }} -content {{ item.content }}
+      if [ "$?" -eq "0" ]; then
+        echo "CHANGED"
+      else
+        echo "FAILED"
+      fi
+    else
+      echo "exists already"
+    fi
+  args:
+    executable: /bin/bash
+  loop: "{{ prop_proxmox_cifsstorage }}"
+  register: result
+  changed_when: '"CHANGED" in result.stdout'
+  failed_when: '"FAILED" in result.stdout'
+  vars:
+    ansible_connection: ssh
+    ansible_host: "{{ prop_ipaddress }}"
+  become: true

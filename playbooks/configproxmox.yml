@@ -3,27 +3,10 @@
 - name: "Playbook: Config Proxmox"
   hosts: "{{ args_host }}"
   gather_facts: false
-  become: true
-  vars:
-    ansible_host: "{{ args_ipaddress }}"
 
   vars_files:
     - /etc/ansible/inventory/vars.yml
-******************** NOT UPDATES **************************
-  roles:
-    - role: alex.proxmox.checkknownhosts
-      vars:
-        - args_proxmox_host: "{{ args_ipaddress }}"
-    - role: alex.proxmox.config
-    - role: alex.linux.installsmb
-    - role: alex.linux.addsmbshare
-      vars:
-        - args_smb_name: "pve"
-        - args_smb_comment: "pve share"
-        - args_smb_path: "/var/lib/vz"
-        - args_smb_mode: "no"
-        - args_smb_guest: "yes"
-    - role: alex.linux.setsmbuser
-      vars:
-        - args_smb_user: "{{ args_admin_username }}"
-        - args_smb_password: "{{ args_admin_password }}"
+
+  tasks:
+    - ansible.builtin.include_role:
+        name: alex.proxmox.configproxmox

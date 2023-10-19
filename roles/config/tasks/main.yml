@@ -1,5 +1,0 @@
----
-
-- include_tasks: repositories.yml
-
-#- include_tasks: set.vm.yml
