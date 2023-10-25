@@ -15,9 +15,9 @@
 - ansible.builtin.include_role: # start vm
     name: alex.proxmox.start
 
-- ansible.builtin.include_role: # waitstarted
-    name: alex.base.waitstarted
+- ansible.builtin.include_role: # waitinstallstarted
+    name: alex.base.waitinstallstarted
 
 - ansible.builtin.include_role: # knownhost
-    name: alex.base.knownoshost
+    name: alex.base.knowninstallhost
 
