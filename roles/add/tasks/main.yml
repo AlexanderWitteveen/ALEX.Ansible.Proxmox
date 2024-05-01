@@ -17,7 +17,7 @@
     - name: Copy template [{{ prop_proxmox_templateid }},{{ prop_proxmox_vmid }}]
       shell: |
         qm clone {{ prop_proxmox_templateid }} {{ prop_proxmox_vmid }} --full --name "{{ prop_proxmox_name }}"
-        description=$'# {{ prop_hostname }}  \n{{ prop_description }}  \n{{ prop_arch }}  \n{{ prop_os }}  \n{{ prop_ipaddress }}  \n'
+        description=$'# {{ prop_hostname }}  \n{{ prop_description }}  \n{{ prop_arch }}  \n{{ prop_os }}  \n{{ prop_ipaddress }}  \n{{ prop_environment }}  \n'
         description+=$(date)
         qm set {{ prop_proxmox_vmid }} --agent enabled=0 --description "$description"
         if [ "$?" -eq "0" ]; then
