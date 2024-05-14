@@ -10,7 +10,7 @@
     name: alex.proxmox.add
 
 - ansible.builtin.include_role: # add vm
-    name: alex.proxmox.setinstallnetwork
+    name: alex.proxmox.setnetwork
 
 - ansible.builtin.include_role: # start vm
     name: alex.proxmox.start
