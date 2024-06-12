@@ -5,9 +5,6 @@
 
 - include_tasks: repositories.yml
 
-- ansible.builtin.include_role: # configuser
-    name: alex.preinstall.configuser
-
 - ansible.builtin.include_role: # installsmbclient
     name: alex.linux.installsmbclient
 

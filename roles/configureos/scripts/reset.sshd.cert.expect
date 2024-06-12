@@ -1,0 +1,40 @@
+#!/usr/bin/expect -f
+
+set ipaddress [lindex $argv 0]
+set password [lindex $argv 1]
+
+set timeout 30
+
+spawn ssh -o StrictHostKeyChecking=no root@$ipaddress
+
+expect {
+    "password:" {
+        send -- "$password\r"
+        expect {
+            "Linux" {
+                expect "root@*"
+                send -- "rm /etc/ssh/ssh_host*\r"
+
+                expect "root@*"
+                send -- "ls -las /etc/ssh\r"
+
+                expect "root@*"
+                send -- "ssh-keygen -A\r"
+
+                expect "root@*"
+                send -- "systemctl restart sshd\r"
+
+                expect "root@*"
+                send -- "exit\r"
+
+                expect eof
+
+                send_user "**** Changed: Finished Expect: No expire - sshd certificates have been updated\n"
+            }
+            "Permission denied" {
+                send -- "\x03"
+                send_user "**** Error: Finished Expect: No expire - Password has been blocked\n"
+            }
+        }
+    }
+}

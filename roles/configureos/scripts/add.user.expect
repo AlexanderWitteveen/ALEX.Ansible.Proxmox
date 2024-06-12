@@ -1,0 +1,59 @@
+#!/usr/bin/expect -f
+
+set ipaddress [lindex $argv 0]
+set username [lindex $argv 1]
+set password [lindex $argv 2]
+
+set timeout 30
+
+spawn ssh root@$ipaddress
+
+expect {
+    "password:" {
+        send -- "$password\r"
+        expect "Last login" {
+            expect "root@*"
+            send -- "getent passwd $username ; echo A$?A\r"
+
+            expect {
+                "A0A" {
+                    expect "root@*"
+                    send -- "exit\r"
+
+                    expect eof
+
+                    send_user "**** Finished Expect: User already exists\n"
+                }
+                "A2A" {
+                    expect "root@*"
+                    send -- "useradd -m $username --gid adm --shell /bin/bash\r"
+
+                    expect "root@*"
+                    send -- "usermod -a -G adm,sudo,plugdev,root $username\r"
+
+                    expect "root@*"
+                    send -- "passwd $username\r"
+
+                    expect "password"
+                    send -- "$password\r"
+
+                    expect "password"
+                    send -- "$password\r"
+
+                    expect "root@*"
+                    send -- "exit\r"
+
+                    expect eof
+
+                    send_user "**** Changed: Finished Expect: New user added and configured\n"
+                }
+            }
+        }
+    }
+    "Permission denied (publickey)" {
+        expect eof
+
+        send_user "**** Error: Finished Expect: SSH No password allowed\n"
+    }
+}
+

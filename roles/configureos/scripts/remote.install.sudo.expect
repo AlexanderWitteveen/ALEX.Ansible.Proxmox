@@ -1,0 +1,45 @@
+#!/usr/bin/expect -f
+
+set ipaddress [lindex $argv 0]
+set password [lindex $argv 1]
+
+set timeout 120
+
+spawn ssh root@$ipaddress
+expect {
+    "password:" {
+        send -- "$password\r"
+        expect "Last login" {
+            expect "root@*"
+            send -- "dpkg -s \"sudo\" &> /dev/null\r"
+
+            expect "root@*"
+            send -- "echo A$?A\r"
+
+            expect {
+                "A0A" {
+                    expect "root@*"
+
+                    send_user "**** Expect: Sudo was already installed\n"
+                }
+                "A1A" {
+                    expect "root@*"
+                    send -- "apt update\r"
+
+                    expect "root@*"
+                    send -- "apt install sudo -y\r"
+
+                    expect "root@*"
+
+                    send_user "**** Changed: Expect: installed Sudo\n"
+                }
+            }
+
+            send -- "exit\r"
+
+            expect eof
+
+            send_user "**** Finished Expect\n"
+        }
+    }
+}
