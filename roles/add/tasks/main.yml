@@ -108,7 +108,7 @@
       args:
         executable: /bin/bash
       register: result
-      loop: "{{ prop_vm_usb }}"
+      loop: "{{ prop_vm_usb | default([]) }}"
       changed_when: '"CHANGED" in result.stdout'
       failed_when: '"FAILED" in result.stdout'
       vars:
