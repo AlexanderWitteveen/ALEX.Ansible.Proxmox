@@ -26,3 +26,4 @@
     ansible_connection: ssh
     ansible_host: "{{ prop_proxmox_host }}"
   become: true
+
