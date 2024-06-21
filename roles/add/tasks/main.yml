@@ -22,7 +22,11 @@
       shell: |
         qm clone {{ prop_proxmox_templateid }} {{ prop_proxmox_vmid }} --full --name "{{ prop_proxmox_name }}"
         description=$'# {{ prop_hostname }}  \n{{ prop_description }}  \n{{ prop_arch }}  \n{{ prop_os }}  \n{{ prop_ipaddress }}  \n{{ prop_environment }}  \n'
-        description+=$(date)
+        description+="$(date)"
+        description+=$'  \n'
+        if [ "{{ prop_weburl | default('null') }}" != "null" ]; then
+          description+=$'<a href="{{ prop_weburl | default("null") }}" target="_blank">web</a>  \n'
+        fi
         qm set {{ prop_proxmox_vmid }} --agent enabled=0 --description "$description"
         qm set {{ prop_proxmox_vmid }} --cpu cputype=host 
         if [ "$?" -eq "0" ]; then
