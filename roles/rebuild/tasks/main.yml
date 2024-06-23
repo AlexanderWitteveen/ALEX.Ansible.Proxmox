@@ -1,8 +1,5 @@
 ---
 
-- ansible.builtin.include_role: # knownhost
-    name: alex.base.knownproxmoxhost
-
 - ansible.builtin.include_role: # remove vm
     name: alex.proxmox.remove
 

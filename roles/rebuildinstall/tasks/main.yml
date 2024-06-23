@@ -1,15 +1,12 @@
 ---
 
-- ansible.builtin.include_role: # knownhost
-    name: alex.base.knownproxmoxhost
-
 - ansible.builtin.include_role: # remove vm
     name: alex.proxmox.remove
 
 - ansible.builtin.include_role: # add vm
     name: alex.proxmox.add
 
-- ansible.builtin.include_role: # add vm
+- ansible.builtin.include_role: # set network
     name: alex.proxmox.setnetwork
 
 - ansible.builtin.include_role: # start vm
