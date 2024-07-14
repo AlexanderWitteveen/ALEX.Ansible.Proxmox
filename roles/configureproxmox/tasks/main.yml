@@ -1,7 +1,7 @@
 ---
 
-- ansible.builtin.include_role: # knownoshost
-    name: alex.base.knownoshost
+# - ansible.builtin.include_role: # knownoshost
+#     name: alex.base.knownoshost
 
 # - name: Set Root Password
 #   shell: |
@@ -17,19 +17,22 @@
 #   connection: local
 #   become: false
 
-# - name: Reset SSHD Cert
-#   shell: |
-#     {{ role_path }}/scripts/reset.sshd.cert.sh "{{ prop_ipaddress }}" "{{ prop_admin_password }}"
-#     if [[ "$?" != "0" ]]; then
-#       echo "Error executing script" 
-#     fi
-#   args:
-#     executable: /bin/bash
-#   register: expectresult
-#   changed_when: '"Changed" in expectresult.stdout'
-#   failed_when: '("Error" in expectresult.stdout) or ("Host key verification failed." in expectresult.stdout)'
-#   connection: local
-#   become: false
+
+## #################################### this corrupts the cluster
+## - name: Reset SSHD Cert
+##   shell: |
+##     {{ role_path }}/scripts/reset.sshd.cert.sh "{{ prop_ipaddress }}" "{{ prop_admin_password }}"
+##     if [[ "$?" != "0" ]]; then
+##       echo "Error executing script" 
+##     fi
+##   args:
+##     executable: /bin/bash
+##   register: expectresult
+##   changed_when: '"Changed" in expectresult.stdout'
+##   failed_when: '("Error" in expectresult.stdout) or ("Host key verification failed." in expectresult.stdout)'
+##   connection: local
+##   become: false
+## ####################################
 
 # - ansible.builtin.include_role: # knownoshost
 #     name: alex.base.knownoshost
@@ -91,17 +94,46 @@
 #   connection: local
 #   become: false
 
-# - name: Delete content & directory
-#   ansible.builtin.file:
-#     state: absent
-#     path: "{{ item }}"
-#   loop:
-#     - /etc/apt/sources.list.d/ceph.list
-#     - /etc/apt/sources.list.d/pve-enterprise.list
-#   vars:
-#     ansible_connection: ssh
-#     ansible_host: "{{ prop_ipaddress }}"
-#   become: true
+# - name: Remote install python3
+#   shell: |
+#     {{ role_path }}/scripts/remote.install.python3.sh "{{ prop_ipaddress }}" "{{ prop_admin_username }}" "{{ prop_basename }}"
+#     if [[ "$?" != "0" ]]; then
+#       echo "Error executing script" 
+#     fi
+#   args:
+#     executable: /bin/bash
+#   register: expectresult
+#   changed_when: '"Changed" in expectresult.stdout'
+#   failed_when: '"Error" in expectresult.stdout'
+#   connection: local
+#   become: false
+
+- ansible.builtin.include_role: # knownoshost
+    name: alex.base.knownoshost
+
+- name: Debug
+  shell: |
+    echo "Hello" 
+  args:
+    executable: /bin/bash
+    ansible_connection: ssh
+    # host: "{{ prop_ipaddress }}"
+    # ansible_host: "{{ prop_ipaddress }}"
+    # ansible_ssh_host: "{{ prop_ipaddress }}"
+  become: true
+  timeout: 20
+
+- name: Delete content & directory
+  ansible.builtin.file:
+    state: absent
+    path: "{{ item }}"
+  loop:
+    - /etc/apt/sources.list.d/ceph.list
+    - /etc/apt/sources.list.d/pve-enterprise.list
+  vars:
+    ansible_connection: ssh
+    ansible_host: "{{ prop_ipaddress }}"
+  become: true
 
 # - name: Add specified repository into sources list
 #   ansible.builtin.apt_repository:

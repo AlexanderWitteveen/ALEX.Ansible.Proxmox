@@ -3,9 +3,6 @@
 - ansible.builtin.include_role: # knownhost
     name: alex.base.knownproxmoxhost
 
-- ansible.builtin.include_role: # detect python
-    name: alex.proxmox.detectpythonproxmox
-
 - name: Status [{{ prop_proxmox_vmid }}]
   shell: |
     status=$(qm status {{ prop_proxmox_vmid }} 2> /dev/null )
@@ -32,5 +29,4 @@
   vars:
     ansible_connection: ssh
     ansible_host: "{{ prop_proxmox_host }}"
-    ansible_python_interpreter: "{{ prop_proxmox_python_path }}"
   become: true

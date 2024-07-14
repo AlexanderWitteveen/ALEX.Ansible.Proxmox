@@ -3,9 +3,6 @@
 - ansible.builtin.include_role: # knownhost
     name: alex.base.knownproxmoxhost
 
-- ansible.builtin.include_role: # detect python
-    name: alex.proxmox.detectpythonproxmox
-
 - ansible.builtin.include_role:
     name: alex.proxmox.statustemplate
 
@@ -48,7 +45,6 @@
       vars:
         ansible_connection: ssh
         ansible_host: "{{ prop_proxmox_host }}"
-        ansible_python_interpreter: "{{ prop_proxmox_python_path }}"
       become: true
 
     - ansible.builtin.include_role:
@@ -70,7 +66,6 @@
       vars:
         ansible_connection: ssh
         ansible_host: "{{ prop_proxmox_host }}"
-        ansible_python_interpreter: "{{ prop_proxmox_python_path }}"
       become: true
 
     - name: Set cores [{{ prop_proxmox_vmid }}]
@@ -89,7 +84,6 @@
       vars:
         ansible_connection: ssh
         ansible_host: "{{ prop_proxmox_host }}"
-        ansible_python_interpreter: "{{ prop_proxmox_python_path }}"
       become: true
 
     - name: Set boot start [{{ prop_proxmox_vmid }}]
@@ -108,7 +102,6 @@
       vars:
         ansible_connection: ssh
         ansible_host: "{{ prop_proxmox_host }}"
-        ansible_python_interpreter: "{{ prop_proxmox_python_path }}"
       become: true
 
     - name: Set usb [{{ prop_proxmox_vmid }}]
@@ -128,5 +121,4 @@
       vars:
         ansible_connection: ssh
         ansible_host: "{{ prop_proxmox_host }}"
-        ansible_python_interpreter: "{{ prop_proxmox_python_path }}"
       become: true

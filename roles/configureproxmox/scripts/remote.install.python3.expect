@@ -1,0 +1,59 @@
+#!/usr/bin/expect -f
+
+set ipaddress [lindex $argv 0]
+set username [lindex $argv 1]
+set basename [lindex $argv 2]
+
+send_user "IPAddress(exp) is $ipaddress\n"
+
+set timeout 120
+
+spawn ssh $username@$ipaddress
+
+expect {
+    "Last login" {
+        expect "$username\@*"
+        send -- "test -f /$basename/python/venv/bin/python3 \r"
+
+        expect "$username\@*"
+        send -- "echo A$?A\r"
+
+        expect {
+            "A0A" {
+                expect "$username\@*"
+                send_user "**** Expect: Pyhthon was already installed\n"
+            }
+            "A1A" {
+                expect "$username\@*"
+                send -- "sudo apt install python3 python3-pip python3-venv -y\r"
+
+                expect "$username\@*"
+                send -- "sudo mkdir /$basename/python \r"
+
+                expect "$username\@*"
+                send -- "sudo python3 -m venv /$basename/python/venv\r"
+
+                expect "$username\@*"
+                send -- "echo 'source /$basename/python/venv/bin/activate' >> ~/.bashrc\r"
+
+                expect "$username\@*"
+                send -- "sudo su\r"
+
+                expect "root\@*"
+                send -- "echo 'source /$basename/python/venv/bin/activate' >> /root/.bashrc\r"
+
+                expect "root\@*"
+                send -- "exit\r"
+
+                expect "$username\@*"
+                send_user "**** Changed: Expect: installed Python\n"
+            }
+        }
+
+        send -- "exit\r"
+
+        expect eof
+
+        send_user "**** Finished Expect\n"
+    }
+}

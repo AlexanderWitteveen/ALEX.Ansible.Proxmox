@@ -20,5 +20,4 @@
   vars:
     ansible_connection: ssh
     ansible_host: "{{ prop_proxmox_host }}"
-    ansible_python_interpreter: "{{ prop_proxmox_python_path }}"
   become: true

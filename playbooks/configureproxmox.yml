@@ -8,5 +8,7 @@
     - /etc/ansible/inventory/vars.yml
 
   tasks:
-    - ansible.builtin.include_role:
-        name: alex.proxmox.configproxmox
+    - ansible.builtin.include_role: # configureproxmox
+        name: alex.proxmox.configureproxmox
+
+
