@@ -25,6 +25,5 @@
   vars:
     ansible_connection: ssh
     ansible_host: "{{ prop_proxmox_host }}"
-    ansible_python_interpreter: /alex/python/venv/bin/python3
   become: true
 

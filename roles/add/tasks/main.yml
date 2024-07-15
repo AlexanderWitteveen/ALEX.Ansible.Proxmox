@@ -45,7 +45,6 @@
       vars:
         ansible_connection: ssh
         ansible_host: "{{ prop_proxmox_host }}"
-        ansible_python_interpreter: /alex/python/venv/bin/python3
       become: true
 
     - ansible.builtin.include_role:
@@ -67,7 +66,6 @@
       vars:
         ansible_connection: ssh
         ansible_host: "{{ prop_proxmox_host }}"
-        ansible_python_interpreter: /alex/python/venv/bin/python3
       become: true
 
     - name: Set cores [{{ prop_proxmox_vmid }}]
@@ -86,7 +84,6 @@
       vars:
         ansible_connection: ssh
         ansible_host: "{{ prop_proxmox_host }}"
-        ansible_python_interpreter: /alex/python/venv/bin/python3
       become: true
 
     - name: Set boot start [{{ prop_proxmox_vmid }}]
