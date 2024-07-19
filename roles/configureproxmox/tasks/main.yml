@@ -1,21 +1,21 @@
 ---
 
-# - ansible.builtin.include_role: # knownoshost
-#     name: alex.base.knownoshost
+- ansible.builtin.include_role: # knownoshost
+    name: alex.base.knownoshost
 
-# - name: Set Root Password
-#   shell: |
-#     {{ role_path }}/scripts/set.root.password.sh "{{ prop_ipaddress }}" "{{ prop_admin_password }}"
-#     if [[ "$?" != "0" ]]; then
-#       echo "Error executing script" 
-#     fi
-#   args:
-#     executable: /bin/bash
-#   register: expectresult
-#   changed_when: '"Changed" in expectresult.stdout'
-#   failed_when: '("Error" in expectresult.stdout) or ("Host key verification failed." in expectresult.stdout)'
-#   connection: local
-#   become: false
+- name: Set Root Password
+  shell: |
+    {{ role_path }}/scripts/set.root.password.sh "{{ prop_ipaddress }}" "{{ prop_admin_password }}"
+    if [[ "$?" != "0" ]]; then
+      echo "Error executing script" 
+    fi
+  args:
+    executable: /bin/bash
+  register: expectresult
+  changed_when: '"Changed" in expectresult.stdout'
+  failed_when: '("Error" in expectresult.stdout) or ("Host key verification failed." in expectresult.stdout)'
+  connection: local
+  become: false
 
 
 ## #################################### this corrupts the cluster
@@ -37,76 +37,76 @@
 # - ansible.builtin.include_role: # knownoshost
 #     name: alex.base.knownoshost
 
-# - name: Add User
-#   shell: |
-#     {{ role_path }}/scripts/add.user.sh "{{ prop_ipaddress }}" "{{ prop_admin_username }}" "{{ prop_admin_password }}"
-#     if [[ "$?" != "0" ]]; then
-#       echo "Error executing script" 
-#     fi
-#   args:
-#     executable: /bin/bash
-#   register: result
-#   changed_when: '"Changed" in result.stdout'
-#   failed_when: '("Error" in result.stdout) or ("Host key verification failed." in result.stdout)'
-#   vars:
-#     ansible_connection: local
-#   become: false
+- name: Add User
+  shell: |
+    {{ role_path }}/scripts/add.user.sh "{{ prop_ipaddress }}" "{{ prop_admin_username }}" "{{ prop_admin_password }}"
+    if [[ "$?" != "0" ]]; then
+      echo "Error executing script" 
+    fi
+  args:
+    executable: /bin/bash
+  register: result
+  changed_when: '"Changed" in result.stdout'
+  failed_when: '("Error" in result.stdout) or ("Host key verification failed." in result.stdout)'
+  vars:
+    ansible_connection: local
+  become: false
 
-# - name: Ensure autologon
-#   shell: |
-#     {{ role_path }}/scripts/auto.logon.sh "{{ prop_ipaddress }}" "{{ prop_admin_username }}" "{{ prop_admin_password }}" "{{ prop_local_user_ssh_key }}" "{{ prop_local_user_ssh_pub }}"
-#     if [[ "$?" != "0" ]]; then
-#       echo "Error executing script" 
-#     fi
-#   args:
-#     executable: /bin/bash
-#   register: expectresult
-#   changed_when: '"Changed" in expectresult.stdout'
-#   failed_when: '"Error" in expectresult.stdout'
-#   connection: local
-#   become: false
+- name: Ensure autologon
+  shell: |
+    {{ role_path }}/scripts/auto.logon.sh "{{ prop_ipaddress }}" "{{ prop_admin_username }}" "{{ prop_admin_password }}" "{{ prop_local_user_ssh_key }}" "{{ prop_local_user_ssh_pub }}"
+    if [[ "$?" != "0" ]]; then
+      echo "Error executing script" 
+    fi
+  args:
+    executable: /bin/bash
+  register: expectresult
+  changed_when: '"Changed" in expectresult.stdout'
+  failed_when: '"Error" in expectresult.stdout'
+  connection: local
+  become: false
 
-# - name: Remote install sudo
-#   shell: |
-#     {{ role_path }}/scripts/remote.install.sudo.sh "{{ prop_ipaddress }}" "{{ prop_admin_password }}"
-#     if [[ "$?" != "0" ]]; then
-#       echo "Error executing script" 
-#     fi
-#   args:
-#     executable: /bin/bash
-#   register: expectresult
-#   changed_when: '"Changed" in expectresult.stdout'
-#   failed_when: '"Error" in expectresult.stdout'
-#   connection: local
-#   become: false
+- name: Remote install sudo
+  shell: |
+    {{ role_path }}/scripts/remote.install.sudo.sh "{{ prop_ipaddress }}" "{{ prop_admin_password }}"
+    if [[ "$?" != "0" ]]; then
+      echo "Error executing script" 
+    fi
+  args:
+    executable: /bin/bash
+  register: expectresult
+  changed_when: '"Changed" in expectresult.stdout'
+  failed_when: '"Error" in expectresult.stdout'
+  connection: local
+  become: false
 
-# - name: Set sudo for user
-#   shell: |
-#     {{ role_path }}/scripts/sudo.user.sh "{{ prop_ipaddress }}" "{{ prop_admin_username }}" "{{ prop_admin_password }}"
-#     if [[ "$?" != "0" ]]; then
-#       echo "Error executing script" 
-#     fi
-#   args:
-#     executable: /bin/bash
-#   register: expectresult
-#   changed_when: '"Changed" in expectresult.stdout'
-#   failed_when: '"Error" in expectresult.stdout'
-#   connection: local
-#   become: false
+- name: Set sudo for user
+  shell: |
+    {{ role_path }}/scripts/sudo.user.sh "{{ prop_ipaddress }}" "{{ prop_admin_username }}" "{{ prop_admin_password }}"
+    if [[ "$?" != "0" ]]; then
+      echo "Error executing script" 
+    fi
+  args:
+    executable: /bin/bash
+  register: expectresult
+  changed_when: '"Changed" in expectresult.stdout'
+  failed_when: '"Error" in expectresult.stdout'
+  connection: local
+  become: false
 
-# - name: Remote install python3
-#   shell: |
-#     {{ role_path }}/scripts/remote.install.python3.sh "{{ prop_ipaddress }}" "{{ prop_admin_username }}" "{{ prop_basename }}"
-#     if [[ "$?" != "0" ]]; then
-#       echo "Error executing script" 
-#     fi
-#   args:
-#     executable: /bin/bash
-#   register: expectresult
-#   changed_when: '"Changed" in expectresult.stdout'
-#   failed_when: '"Error" in expectresult.stdout'
-#   connection: local
-#   become: false
+- name: Remote install python3
+  shell: |
+    {{ role_path }}/scripts/remote.install.python3.sh "{{ prop_ipaddress }}" "{{ prop_admin_username }}" "{{ prop_basename }}"
+    if [[ "$?" != "0" ]]; then
+      echo "Error executing script" 
+    fi
+  args:
+    executable: /bin/bash
+  register: expectresult
+  changed_when: '"Changed" in expectresult.stdout'
+  failed_when: '"Error" in expectresult.stdout'
+  connection: local
+  become: false
 
 - ansible.builtin.include_role: # knownoshost
     name: alex.base.knownoshost
@@ -116,12 +116,11 @@
     echo "Hello" 
   args:
     executable: /bin/bash
+  vars:
     ansible_connection: ssh
-    # host: "{{ prop_ipaddress }}"
-    # ansible_host: "{{ prop_ipaddress }}"
-    # ansible_ssh_host: "{{ prop_ipaddress }}"
-  become: true
-  timeout: 20
+    ansible_host: "{{ prop_ipaddress }}"
+  become: false
+  timeout: 200
 
 - name: Delete content & directory
   ansible.builtin.file:
@@ -135,50 +134,54 @@
     ansible_host: "{{ prop_ipaddress }}"
   become: true
 
-# - name: Add specified repository into sources list
-#   ansible.builtin.apt_repository:
-#     repo: "{{ item }}"
-#     state: present
-#   loop:
-#     - deb http://download.proxmox.com/debian/pve bookworm pve-no-subscription
-#   vars:
-#     ansible_connection: ssh
-#     ansible_host: "{{ prop_ipaddress }}"
-#   become: true
+- name: Add specified repository into sources list
+  ansible.builtin.apt_repository:
+    repo: "{{ item }}"
+    state: present
+  loop:
+    - deb http://download.proxmox.com/debian/pve bookworm pve-no-subscription
+  vars:
+    ansible_connection: ssh
+    ansible_host: "{{ prop_ipaddress }}"
+  become: true
 
-# - name: Update cache
-#   apt:
-#     update_cache: yes
-#   changed_when: false
-#   failed_when: false
-#   vars:
-#     ansible_connection: ssh
-#     ansible_host: "{{ prop_ipaddress }}"
-#   become: true
+- name: Update cache
+  apt:
+    update_cache: yes
+  changed_when: false
+  failed_when: false
+  vars:
+    ansible_connection: ssh
+    ansible_host: "{{ prop_ipaddress }}"
+  become: true
 
-# - name: Remove unused packages from the cache
-#   apt:
-#     autoclean: yes
-#   vars:
-#     ansible_connection: ssh
-#     ansible_host: "{{ prop_ipaddress }}"
-#   become: true
+- name: Remove unused packages from the cache
+  apt:
+    autoclean: yes
+  vars:
+    ansible_connection: ssh
+    ansible_host: "{{ prop_ipaddress }}"
+  become: true
 
-# - name: Remove dependencies that are no longer required
-#   apt:
-#     autoremove: yes
-#   vars:
-#     ansible_connection: ssh
-#     ansible_host: "{{ prop_ipaddress }}"
-#   become: true
+- name: Remove dependencies that are no longer required
+  apt:
+    autoremove: yes
+  vars:
+    ansible_connection: ssh
+    ansible_host: "{{ prop_ipaddress }}"
+  become: true
 
-# - name: Upgrade all packages to the latest version
-#   apt:
-#     upgrade: full
-#   vars:
-#     ansible_connection: ssh
-#     ansible_host: "{{ prop_ipaddress }}"
-#   become: true
+- name: Upgrade all packages to the latest version
+  apt:
+    upgrade: full
+  vars:
+    ansible_connection: ssh
+    ansible_host: "{{ prop_ipaddress }}"
+  become: true
+
+- ansible.builtin.include_role: # knownoshost
+    name: alex.proxmox.configuresmb
+
 
 # - name: Create CIFS storage
 #   shell: |

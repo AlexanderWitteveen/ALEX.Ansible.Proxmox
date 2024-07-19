@@ -1,0 +1,105 @@
+---
+
+- name: Install a list of packages
+  apt:
+    name: "{{ packages }}"
+    state: present
+    update_cache: yes
+  vars:
+    packages:
+    - cifs-utils
+    - smbclient
+    - samba
+    ansible_connection: ssh
+    ansible_host: "{{ prop_ipaddress }}"
+  become: true
+
+- name: create directory
+  ansible.builtin.file:
+    state: directory
+    path: "/home/{{ prop_admin_username }}/.{{ prop_basename }}"
+  vars:
+    ansible_connection: ssh
+    ansible_host: "{{ prop_ipaddress }}"
+  become: true
+
+- name: add smb user
+  shell: |
+    ( echo "{{ prop_admin_password }}" ; echo "{{ prop_admin_password }}" ) | smbpasswd -s -a {{ prop_admin_username }}
+    echo "CHANGED"
+  register: result
+  loop: "{{ prop_smb_shares }}"
+  changed_when: '"CHANGED" in result.stdout'
+  vars:
+    ansible_connection: ssh
+    ansible_host: "{{ prop_ipaddress }}"
+  become: true
+
+- name: Template smb.conf file
+  ansible.builtin.template:
+    src: smb.conf.j2
+    dest: "/etc/samba/smb.conf"
+    owner: "{{ prop_admin_username }}"
+    group: "{{ prop_admin_groupname }}"
+    mode: '0644'
+  vars:
+    ansible_connection: ssh
+    ansible_host: "{{ prop_ipaddress }}"
+  become: true
+
+- name: add smb share
+  shell: |
+    #echo "Path: {{ item.name }}"
+    #echo "comment: {{ item.comment }}"
+    #echo "Path: {{ item.path }}"
+    #echo "mode: {{ item.mode }}"
+    #echo "guest: {{ item.guest }}"
+    line="[{{ item.name }}]"
+    count=$(cat /etc/samba/smb.conf | grep -x -F "$line" | wc -l)
+    #echo "count = $count"
+    if [ $count -gt 0 ] ; then
+      echo "NO CHANGE"
+    else
+      echo "[{{ item.name }}]" >> /etc/samba/smb.conf
+      echo "   comment = {{ item.comment }}" >> /etc/samba/smb.conf
+      echo "   path = {{ item.path }}" >> /etc/samba/smb.conf
+      echo "   read only = {{ item.mode }}" >> /etc/samba/smb.conf
+      echo "   browseable = yes" >> /etc/samba/smb.conf
+      echo "   guest ok = {{ item.guest }}" >> /etc/samba/smb.conf
+      service smbd restart
+      echo "CHANGED"
+    fi
+  register: result
+  loop: "{{ prop_smb_shares }}"
+  changed_when: '"CHANGED" in result.stdout'
+  vars:
+    ansible_connection: ssh
+    ansible_host: "{{ prop_ipaddress }}"
+  become: true
+
+- name: Template credential file
+  ansible.builtin.template:
+    src: .smbcred.j2
+    dest: "/home/{{ prop_admin_username }}/.{{ prop_basename }}/.smbcred"
+    owner: "{{ prop_admin_username }}"
+    group: "{{ prop_admin_groupname }}"
+    mode: '0400'
+  vars:
+    ansible_connection: ssh
+    ansible_host: "{{ prop_ipaddress }}"
+  become: true
+
+- name: Mount SMB volume
+  ansible.posix.mount:
+    src: "{{ item.source }}"
+    path: "{{ item.path }}"
+    opts: 'rw,auto,vers=3,file_mode=0777,dir_mode=0777,dom=WORKGROUP,credentials=/home/{{ prop_admin_username }}/.{{ prop_basename }}/.smbcred'
+    fstype: cifs
+    state: mounted
+  loop: "{{ prop_smb_mounts }}"
+  vars:
+    ansible_connection: ssh
+    ansible_host: "{{ prop_ipaddress }}"
+  become: true
+
+

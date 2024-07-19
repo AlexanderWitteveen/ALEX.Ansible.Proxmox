@@ -6,7 +6,7 @@ set basename [lindex $argv 2]
 
 send_user "IPAddress(exp) is $ipaddress\n"
 
-set timeout 120
+set timeout 600
 
 spawn ssh $username@$ipaddress
 
