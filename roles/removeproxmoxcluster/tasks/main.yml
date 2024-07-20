@@ -1,0 +1,50 @@
+---
+
+- ansible.builtin.include_role: # knownoshost
+    name: alex.base.knownoshost
+
+- name: Stop Service
+  ansible.builtin.service:
+    name: "{{ item }}"
+    state: stopped
+  become: true
+  loop:
+    - pve-cluster
+    - corosync
+  vars:
+    ansible_connection: ssh
+    ansible_host: "{{ prop_ipaddress }}"
+  become: true
+
+- name: Restart local mode
+  shell: |
+    rm /etc/pve/corosync.conf
+    rm -r /etc/corosync/*
+    pmxcfs -l
+  args:
+    executable: /bin/bash
+  register: expectresult
+  changed_when: '"Changed" in expectresult.stdout'
+  failed_when: '("Error" in expectresult.stdout) or ("Host key verification failed." in expectresult.stdout)'
+  vars:
+    ansible_connection: ssh
+    ansible_host: "{{ prop_ipaddress }}"
+  become: true
+
+
+
+
+# - name: Delete content & directory
+#   ansible.builtin.file:
+#     state: absent
+#     path: "{{ item }}"
+#   loop:
+#     - /etc/apt/sources.list.d/ceph.list
+#     - /etc/apt/sources.list.d/pve-enterprise.list
+#   vars:
+#     ansible_connection: ssh
+#     ansible_host: "{{ prop_ipaddress }}"
+#   become: true
+
+
+

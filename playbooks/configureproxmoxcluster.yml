@@ -1,6 +1,6 @@
 ---
 
-- name: "Playbook: Config Proxmox"
+- name: "Playbook: Config Proxmox Cluster"
   hosts: "{{ args_host }}"
   gather_facts: false
 
@@ -9,6 +9,7 @@
 
   tasks:
     - ansible.builtin.include_role: # configureproxmox
-        name: alex.proxmox.configureproxmox
+        name: alex.proxmox.configureproxmoxcluster
+        
 
 
