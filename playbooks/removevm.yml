@@ -1,6 +1,6 @@
 ---
 
-- name: "Playbook: Rebuild [{{ args_host }}]"
+- name: "Playbook: Remove [{{ args_host }}]"
   hosts: "{{ args_host }}"
   gather_facts: false
 
@@ -9,5 +9,5 @@
 
   tasks:
     - ansible.builtin.include_role:
-        name: alex.proxmox.rebuildvm
+        name: alex.proxmox.removevm
         

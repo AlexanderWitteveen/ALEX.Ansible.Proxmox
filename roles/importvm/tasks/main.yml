@@ -1,0 +1,81 @@
+---
+
+- ansible.builtin.include_role:
+    name: alex.proxmox.removevm
+
+- name: Restore [{{ prop_proxmox_vmid }}]
+  shell: |
+    path=$( ls -Art /mnt/build-dev/vm-qemu-*/vzdump-qemu-{{ prop_proxmox_templateid }}-*.vma.zst | tail -n 1 )
+    qmrestore $path {{ prop_proxmox_vmid }}
+    if [ "$?" -eq "0" ]; then
+      echo "CHANGED"
+    else
+      echo "FAILED"
+    fi
+  args:
+    executable: /bin/bash
+  register: result
+  changed_when: '"CHANGED" in result.stdout'
+  failed_when: '"FAILED" in result.stdout'
+  vars:
+    ansible_connection: ssh
+    ansible_host: "{{ prop_proxmox_host }}"
+  become: true
+
+- name: Read tags [{{ prop_proxmox_vmid }}]
+  shell: |
+    tagstring=$( qm config {{ prop_proxmox_vmid }} | grep tags )
+    IFS=' ' read -ra tags1 <<< "$tagstring"
+    IFS=';' read -ra tags2 <<< "${tags1[1]}"
+    break=""
+    echo -n "{"
+    for tag in "${tags2[@]}"; do
+      IFS='-' read -ra tags3 <<< "$tag"
+      echo -n "$break"
+      echo -n '"'
+      echo -n "${tags3[0]}"
+      echo -n '": "'
+      echo -n "${tags3[1]}"
+      echo -n '"'
+      break=", "
+    done
+    echo "}"
+  args:
+    executable: /bin/bash
+  register: tags
+  vars:
+    ansible_connection: ssh
+    ansible_host: "{{ prop_proxmox_host }}"
+  become: true
+
+
+- name: Set Arch [{{ prop_proxmox_vmid }}]
+  shell: |
+    echo '{{ tags.stdout }}' | jq -r '.arch'
+  args:
+    executable: /bin/bash
+  register: prop_arch_string
+  vars:
+    ansible_connection: local
+  become: true
+
+- name: Set OS [{{ prop_proxmox_vmid }}]
+  shell: |
+    echo '{{ tags.stdout }}' | jq -r '.os'
+  args:
+    executable: /bin/bash
+  register: prop_os_string
+  vars:
+    ansible_connection: local
+  become: true
+
+- name: Setting facts
+  ansible.builtin.set_fact:
+    prop_arch: "{{ prop_arch_string.stdout }}"
+    prop_os: "{{ prop_os_string.stdout }}"
+
+- ansible.builtin.include_role:
+    name: alex.proxmox.setmeta
+
+- ansible.builtin.include_role:
+    name: alex.proxmox.sethardware

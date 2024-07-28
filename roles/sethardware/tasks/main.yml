@@ -1,0 +1,140 @@
+---
+
+# - ansible.builtin.include_role:
+#     name: alex.proxmox.statusvm
+
+- name: Set processor [{{ prop_proxmox_vmid }}]
+  shell: |
+    qm set {{ prop_proxmox_vmid }} --cpu cputype=host 
+    if [ "$?" -eq "0" ]; then
+      echo "CHANGED"
+    else
+      echo "FAILED"
+    fi
+  args:
+    executable: /bin/bash
+  register: result
+  changed_when: '"CHANGED" in result.stdout'
+  failed_when: '"FAILED" in result.stdout'
+  vars:
+    ansible_connection: ssh
+    ansible_host: "{{ prop_proxmox_host }}"
+  become: true
+
+- name: Set cores [{{ prop_proxmox_vmid }}]
+  shell: |
+    qm set {{ prop_proxmox_vmid }} --cores {{ prop_vm_cores }}
+    if [ "$?" -eq "0" ]; then
+      echo "CHANGED"
+    else
+      echo "FAILED"
+    fi
+  args:
+    executable: /bin/bash
+  register: result
+  changed_when: '"CHANGED" in result.stdout'
+  failed_when: '"FAILED" in result.stdout'
+  vars:
+    ansible_connection: ssh
+    ansible_host: "{{ prop_proxmox_host }}"
+  become: true
+
+- name: Set memory [{{ prop_proxmox_vmid }}]
+  shell: |
+    qm set {{ prop_proxmox_vmid }} --memory {{ prop_vm_memory }}
+    if [ "$?" -eq "0" ]; then
+      echo "CHANGED"
+    else
+      echo "FAILED"
+    fi
+  args:
+    executable: /bin/bash
+  register: result
+  changed_when: '"CHANGED" in result.stdout'
+  failed_when: '"FAILED" in result.stdout'
+  vars:
+    ansible_connection: ssh
+    ansible_host: "{{ prop_proxmox_host }}"
+  become: true
+
+- name: Set networks [{{ prop_proxmox_vmid }}]
+  shell: |
+    net=model=virtio,macaddr={{ item.mac }},bridge=vmbr0,firewall=1
+    if [ "{{ item.vlan }}" -gt "0" ]; then
+      net=$net,tag={{ item.vlan }}
+    fi
+    echo $net
+    qm set {{ prop_proxmox_vmid }} --{{ item.name }} $net
+    if [ "$?" -eq "0" ]; then
+      echo "CHANGED"
+    else
+      echo "FAILED"
+    fi
+  args:
+    executable: /bin/bash
+  register: result
+  loop: "{{ prop_vm_network }}"
+  changed_when: '"CHANGED" in result.stdout'
+  failed_when: '"FAILED" in result.stdout'
+  vars:
+    ansible_connection: ssh
+    ansible_host: "{{ prop_proxmox_host }}"
+  become: true
+
+
+- name: Set boot start [{{ prop_proxmox_vmid }}]
+  shell: |
+    qm set {{ prop_proxmox_vmid }} --onboot {{ prop_vm_start_boot }}
+    if [ "$?" -eq "0" ]; then
+      echo "CHANGED"
+    else
+      echo "FAILED"
+    fi
+  args:
+    executable: /bin/bash
+  register: result
+  changed_when: '"CHANGED" in result.stdout'
+  failed_when: '"FAILED" in result.stdout'
+  vars:
+    ansible_connection: ssh
+    ansible_host: "{{ prop_proxmox_host }}"
+    ansible_python_interpreter: /alex/python/venv/bin/python3
+  become: true
+
+- name: Set usb [{{ prop_proxmox_vmid }}]
+  shell: |
+    qm set {{ prop_proxmox_vmid }} --{{ item.name }} host={{ item.device }}
+    if [ "$?" -eq "0" ]; then
+      echo "CHANGED"
+    else
+      echo "FAILED"
+    fi
+  args:
+    executable: /bin/bash
+  register: result
+  loop: "{{ prop_vm_usb | default([]) }}"
+  changed_when: '"CHANGED" in result.stdout'
+  failed_when: '"FAILED" in result.stdout'
+  vars:
+    ansible_connection: ssh
+    ansible_host: "{{ prop_proxmox_host }}"
+    ansible_python_interpreter: /alex/python/venv/bin/python3
+  become: true
+
+- name: Set agent [{{ prop_proxmox_vmid }}]
+  shell: |
+    qm set {{ prop_proxmox_vmid }} --agent enabled=0
+    if [ "$?" -eq "0" ]; then
+      echo "CHANGED"
+    else
+      echo "FAILED"
+    fi
+  args:
+    executable: /bin/bash
+  register: result
+  changed_when: '"CHANGED" in result.stdout'
+  failed_when: '"FAILED" in result.stdout'
+  vars:
+    ansible_connection: ssh
+    ansible_host: "{{ prop_proxmox_host }}"
+  become: true

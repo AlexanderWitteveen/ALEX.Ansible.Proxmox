@@ -1,0 +1,14 @@
+---
+
+- ansible.builtin.include_role: # import vm
+    name: alex.proxmox.importvm
+
+- ansible.builtin.include_role: # start vm
+    name: alex.proxmox.startvm
+
+- ansible.builtin.include_role: # waitstarted
+    name: alex.base.waitstarted
+
+- ansible.builtin.include_role: # knownhost
+    name: alex.base.knownoshost
+

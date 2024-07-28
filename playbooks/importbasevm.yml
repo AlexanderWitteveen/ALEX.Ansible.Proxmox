@@ -1,6 +1,6 @@
 ---
 
-- name: "Playbook: Rebuild [{{ args_host }}]"
+- name: "Playbook: Import Base VM [{{ prop_proxmox_vmid }}]"
   hosts: "{{ args_host }}"
   gather_facts: false
 
@@ -9,5 +9,7 @@
 
   tasks:
     - ansible.builtin.include_role:
-        name: alex.proxmox.rebuildvm
-        
+        name: alex.proxmox.importbasevm
+
+
+

@@ -1,15 +1,11 @@
 ---
 
 - ansible.builtin.include_role:
-    name: alex.proxmox.statusvm
+    name: alex.proxmox.stopvm
 
-- ansible.builtin.include_role:
-    name: alex.proxmox.shutdown
-  when: '"RUNNING" in result_status.stdout'
-
-- name: Convert [{{ prop_proxmox_vmid }}]
+- name: Remove [{{ prop_proxmox_vmid }}]
   shell: |
-    qm template {{ prop_proxmox_vmid }}
+    qm destroy {{ prop_proxmox_vmid }} --skiplock --purge
     if [ "$?" -eq "0" ]; then
       echo "CHANGED"
     else
@@ -17,7 +13,7 @@
     fi
   args:
     executable: /bin/bash
-  when: '"TEMPLATE" not in result_status.stdout'
+  when: '"NOTEXIST" not in result_status.stdout'
   register: result
   changed_when: '"CHANGED" in result.stdout'
   failed_when: '"FAILED" in result.stdout'

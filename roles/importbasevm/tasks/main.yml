@@ -1,11 +1,11 @@
 ---
 
 - ansible.builtin.include_role:
-    name: alex.proxmox.stop
+    name: alex.proxmox.removevm
 
-- name: Remove [{{ prop_proxmox_vmid }}]
+- name: Restore [{{ prop_proxmox_vmid }}]
   shell: |
-    qm destroy {{ prop_proxmox_vmid }} --skiplock --purge
+    qmrestore /mnt/build-dev/vm-qemu-base/vzdump-qemu-{{ prop_proxmox_vmid }}-*.vma.zst {{ prop_proxmox_vmid }}
     if [ "$?" -eq "0" ]; then
       echo "CHANGED"
     else
@@ -13,7 +13,6 @@
     fi
   args:
     executable: /bin/bash
-  when: '"NOTEXIST" not in result_status.stdout'
   register: result
   changed_when: '"CHANGED" in result.stdout'
   failed_when: '"FAILED" in result.stdout'
@@ -21,3 +20,9 @@
     ansible_connection: ssh
     ansible_host: "{{ prop_proxmox_host }}"
   become: true
+
+- ansible.builtin.include_role:
+    name: alex.proxmox.setmeta
+
+- ansible.builtin.include_role:
+    name: alex.proxmox.sethardware
