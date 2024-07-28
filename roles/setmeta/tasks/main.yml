@@ -1,5 +1,17 @@
 ---
 
+- name: Set Name [{{ prop_proxmox_vmid }}]
+  shell: |
+    name="{{ prop_hostname }}-{{ prop_os }}-{{ prop_arch }}-{{ prop_environment }}-{{ prop_proxmox_name_description }}"
+    qm set {{ prop_proxmox_vmid }} --name "$name"
+  args:
+    executable: /bin/bash
+  vars:
+    ansible_connection: ssh
+    ansible_host: "{{ prop_proxmox_host }}"
+  become: true
+
+
 - name: Set Tags [{{ prop_proxmox_vmid }}]
   shell: |
     tags="arch-{{ prop_arch }};os-{{ prop_os }};env-{{ prop_environment }};type-{{ prop_proxmox_type }}"
@@ -13,7 +25,6 @@
 
 - name: Set Notes [{{ prop_proxmox_vmid }}]
   shell: |
-    qm set {{ prop_proxmox_vmid }} --name "{{ prop_proxmox_name }}" 
     description=$'# {{ prop_hostname }}  \n{{ prop_description }}  \n{{ prop_arch }}  \n{{ prop_os }}  \n{{ prop_ipaddress }}  \n{{ prop_environment }}  \n'
     description+="$(date)"
     description+=$'  \n'
