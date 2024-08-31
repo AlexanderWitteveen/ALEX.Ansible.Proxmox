@@ -182,6 +182,14 @@
 - ansible.builtin.include_role: # knownoshost
     name: alex.proxmox.configuresmb
 
+- name: Install expect
+  ansible.builtin.apt:
+    name: expect
+    state: present
+  vars:
+    ansible_connection: ssh
+    ansible_host: "{{ prop_ipaddress }}"
+  become: true
 
 # - name: Create CIFS storage
 #   shell: |
