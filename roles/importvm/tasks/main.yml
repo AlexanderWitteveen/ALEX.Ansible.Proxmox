@@ -48,7 +48,6 @@
     ansible_host: "{{ prop_proxmox_host }}"
   become: true
 
-
 - name: Set Arch [{{ prop_proxmox_vmid }}]
   shell: |
     echo '{{ tags.stdout }}' | jq -r '.arch'

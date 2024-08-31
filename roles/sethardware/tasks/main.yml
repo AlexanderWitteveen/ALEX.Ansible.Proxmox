@@ -121,6 +121,25 @@
     ansible_python_interpreter: /alex/python/venv/bin/python3
   become: true
 
+- name: Set serial [{{ prop_proxmox_vmid }}]
+  shell: |
+    qm set {{ prop_proxmox_vmid }} --{{ item.name }} {{ item.type }}
+    if [ "$?" -eq "0" ]; then
+      echo "CHANGED"
+    else
+      echo "FAILED"
+    fi
+  args:
+    executable: /bin/bash
+  register: result
+  loop: "{{ prop_vm_serial | default([]) }}"
+  changed_when: '"CHANGED" in result.stdout'
+  failed_when: '"FAILED" in result.stdout'
+  vars:
+    ansible_connection: ssh
+    ansible_host: "{{ prop_proxmox_host }}"
+  become: true
+
 - name: Set agent [{{ prop_proxmox_vmid }}]
   shell: |
     qm set {{ prop_proxmox_vmid }} --agent enabled=0

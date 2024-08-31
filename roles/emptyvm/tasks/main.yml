@@ -1,0 +1,32 @@
+---
+
+- ansible.builtin.include_role:
+    name: alex.proxmox.removevm
+
+- name: Create [{{ prop_proxmox_vmid }}]
+  shell: |
+    qm create {{ prop_proxmox_vmid }} 
+    if [ "$?" -eq "0" ]; then
+      echo "CHANGED"
+    else
+      echo "FAILED"
+    fi
+  args:
+    executable: /bin/bash
+  register: result
+  changed_when: '"CHANGED" in result.stdout'
+  failed_when: '"FAILED" in result.stdout'
+  vars:
+    ansible_connection: ssh
+    ansible_host: "{{ prop_proxmox_host }}"
+  become: true
+
+# - ansible.builtin.include_role: # start vm
+#     name: alex.proxmox.startvm
+
+# - ansible.builtin.include_role: # waitstarted
+#     name: alex.base.waitstarted
+
+# - ansible.builtin.include_role: # knownhost
+#     name: alex.base.knownoshost
+
