@@ -1,0 +1,96 @@
+---
+
+- name: Ensure certificate folder exists
+  file:
+    path: "/{{ prop_basename }}/certificates"
+    state: directory
+    owner: root
+    group: root
+    mode: 0755
+  vars:
+    ansible_connection: ssh
+    ansible_host: "{{ prop_ipaddress }}"
+  become: true
+
+- name: Copy CA certificates
+  copy:
+    src: "{{ prop_certificates_sources }}/{{ prop_certificates_ca }}.cer"
+    dest: "/{{ prop_basename }}/certificates/{{ prop_certificates_ca }}.cer"
+    owner: root
+    group: root
+    mode: 0755
+  register: cacertresult1
+  vars:
+    ansible_connection: ssh
+    ansible_host: "{{ prop_ipaddress }}"
+  become: true
+
+- name: create key
+  shell: |
+    if [ ! -f "/{{ prop_basename }}/certificates/host.key" ]; then
+      openssl genpkey -algorithm RSA -out "/{{ prop_basename }}/certificates/host.key" -pkeyopt rsa_keygen_bits:2048
+    fi
+  args:
+    executable: /bin/bash
+  vars:
+    ansible_connection: ssh
+    ansible_host: "{{ prop_ipaddress }}"
+  become: true
+
+- name: create certificate signing request
+  shell: |
+    openssl req -new -key "/{{ prop_basename }}/certificates/host.key" -out "/{{ prop_basename }}/certificates/host.csr" -subj "/CN=ALEX" -addext "subjectAltName = DNS:{{ prop_hostname }},DNS:{{ prop_hostname }}.{{ prop_dns_local }},DNS:localhost,IP:127.0.0.1,IP:{{ prop_ipaddress }}"
+  args:
+    executable: /bin/bash
+  vars:
+    ansible_connection: ssh
+    ansible_host: "{{ prop_ipaddress }}"
+  become: true
+
+- name: Copy CSR
+  ansible.builtin.fetch:
+    src: "/{{ prop_basename }}/certificates/host.csr"
+    dest: "/tmp/{{ prop_hostname }}.csr"
+    flat: yes
+  vars:
+    ansible_connection: ssh
+    ansible_host: "{{ prop_ipaddress }}"
+  become: true
+
+- name: Sign certificate
+  shell: |
+    step certificate sign \
+    "/tmp/{{ prop_hostname }}.csr" \
+    "{{ prop_certificates_sources }}/{{ prop_certificates_ca }}.cer" \
+    "{{ prop_certificates_sources }}/{{ prop_certificates_ca }}.key" \
+    --set CommonName={{ prop_hostname }} \
+    --template "{{ prop_certificates_sources }}/{{ prop_certificates_server_template }}" \
+    --set-file "{{ prop_certificates_sources }}/{{ prop_certificates_org_settings }}" \
+    --not-after 8766h \
+    --bundle > "/tmp/{{ prop_hostname }}.cer"
+  args:
+    executable: /bin/bash
+  connection: local
+  become: true
+
+- name: Copy certificate
+  copy:
+    src: "/tmp/{{ prop_hostname }}.cer"
+    dest: "/{{ prop_basename }}/certificates/host.cer"
+    owner: root
+    group: root
+    mode: 0755
+  vars:
+    ansible_connection: ssh
+    ansible_host: "{{ prop_ipaddress }}"
+  become: true
+
+- name: Set certificate
+  shell: |
+    pvenode cert set /{{ prop_basename }}/certificates/host.cer /{{ prop_basename }}/certificates/host.key -force
+  args:
+    executable: /bin/bash
+  vars:
+    ansible_connection: ssh
+    ansible_host: "{{ prop_ipaddress }}"
+  become: true

@@ -9,7 +9,7 @@
 
 - name: Backup [{{ prop_proxmox_vmid }}]
   shell: |
-    vzdump {{ prop_proxmox_vmid }} --mode stop --compress zstd --dumpdir /mnt/build-dev/vm-qemu-base --prune-backups keep-last=1
+    vzdump {{ prop_proxmox_vmid }} --mode stop --compress zstd --dumpdir /mnt/build-dev/vm-qemu-base --prune-backups keep-last=1 
     if [ "$?" -eq "0" ]; then
       echo "CHANGED"
     else
@@ -17,6 +17,8 @@
     fi
   args:
     executable: /bin/bash
+  async: 3000
+  poll: 15
   register: result
   changed_when: '"CHANGED" in result.stdout'
   failed_when: '"FAILED" in result.stdout'

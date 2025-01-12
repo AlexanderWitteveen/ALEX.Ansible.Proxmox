@@ -216,3 +216,8 @@
 #     ansible_host: "{{ prop_ipaddress }}"
 #   become: true
 
+- ansible.builtin.include_role:
+    name: alex.proxmox.certificates
+
+
+
