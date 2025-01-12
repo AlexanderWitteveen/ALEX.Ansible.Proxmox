@@ -17,6 +17,8 @@
     fi
   args:
     executable: /bin/bash
+  async: 3000
+  poll: 15
   register: result
   changed_when: '"CHANGED" in result.stdout'
   failed_when: '"FAILED" in result.stdout'
