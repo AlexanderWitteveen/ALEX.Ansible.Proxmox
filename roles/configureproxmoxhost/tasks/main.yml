@@ -111,9 +111,9 @@
 - ansible.builtin.include_role: # knownoshost
     name: alex.base.knownoshost
 
-- name: Debug
+- name: Debug "{{ prop_ipaddress }}"
   shell: |
-    echo "Hello" 
+    echo "Hello {{ prop_ipaddress }}" 
   args:
     executable: /bin/bash
   vars:
