@@ -76,7 +76,7 @@
     executable: /bin/bash
   register: expectresult
   changed_when: '"Changed" in expectresult.stdout'
-  failed_when: '"Error" in expectresult.stdout'
+  # failed_when: '"Error" in expectresult.stdout'
   connection: local
   become: false
 
@@ -127,8 +127,8 @@
     state: absent
     path: "{{ item }}"
   loop:
-    - /etc/apt/sources.list.d/ceph.list
-    - /etc/apt/sources.list.d/pve-enterprise.list
+    - /etc/apt/sources.list.d/ceph.sources
+    - /etc/apt/sources.list.d/pve-enterprise.sources
   vars:
     ansible_connection: ssh
     ansible_host: "{{ prop_ipaddress }}"
@@ -138,15 +138,16 @@
   ansible.builtin.apt_repository:
     repo: "{{ item }}"
     state: present
+    update_cache: no
   loop:
-    - deb http://download.proxmox.com/debian/pve bookworm pve-no-subscription
+    - "deb http://download.proxmox.com/debian/pve trixie pve-no-subscription"
   vars:
     ansible_connection: ssh
     ansible_host: "{{ prop_ipaddress }}"
   become: true
 
 - name: Update cache
-  apt:
+  ansible.builtin.apt_repository:
     update_cache: yes
   changed_when: false
   failed_when: false
@@ -190,31 +191,6 @@
     ansible_connection: ssh
     ansible_host: "{{ prop_ipaddress }}"
   become: true
-
-# - name: Create CIFS storage
-#   shell: |
-#     status=$(pvesm status | grep {{ item.name }} | wc -l)
-#     if [ $status -eq 0 ] ; then
-#       echo "create"
-#       pvesm add cifs {{ item.name }} -server {{ item.ipaddress }} -username {{ prop_admin_username }} -password {{ prop_admin_password }} -share {{ item.share }} -content {{ item.content }}
-#       if [ "$?" -eq "0" ]; then
-#         echo "CHANGED"
-#       else
-#         echo "FAILED"
-#       fi
-#     else
-#       echo "exists already"
-#     fi
-#   args:
-#     executable: /bin/bash
-#   loop: "{{ prop_proxmox_cifsstorage }}"
-#   register: result
-#   changed_when: '"CHANGED" in result.stdout'
-#   failed_when: '"FAILED" in result.stdout'
-#   vars:
-#     ansible_connection: ssh
-#     ansible_host: "{{ prop_ipaddress }}"
-#   become: true
 
 - ansible.builtin.include_role:
     name: alex.proxmox.certificates

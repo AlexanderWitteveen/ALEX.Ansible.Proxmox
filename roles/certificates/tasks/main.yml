@@ -39,7 +39,7 @@
 
 - name: create certificate signing request
   shell: |
-    openssl req -new -key "/{{ prop_basename }}/certificates/host.key" -out "/{{ prop_basename }}/certificates/host.csr" -subj "/CN=ALEX" -addext "subjectAltName = DNS:{{ prop_hostname }},DNS:{{ prop_hostname }}.{{ prop_dns_local }},DNS:localhost,IP:127.0.0.1,IP:{{ prop_ipaddress }}"
+    openssl req -new -key "/{{ prop_basename }}/certificates/host.key" -out "/{{ prop_basename }}/certificates/host.csr" -subj "/CN=ALEX" -addext "subjectAltName = DNS:{{ prop_hostname }},DNS:localhost,IP:127.0.0.1,IP:{{ prop_ipaddress }}"
   args:
     executable: /bin/bash
   vars:
@@ -94,3 +94,13 @@
     ansible_connection: ssh
     ansible_host: "{{ prop_ipaddress }}"
   become: true
+
+# - name: Update local certificate
+#   shell: |
+#     pvecm updatecerts -force
+#   args:
+#     executable: /bin/bash
+#   vars:
+#     ansible_connection: ssh
+#     ansible_host: "{{ prop_ipaddress }}"
+#   become: true
