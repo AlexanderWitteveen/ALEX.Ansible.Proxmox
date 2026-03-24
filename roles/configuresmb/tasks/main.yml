@@ -89,17 +89,19 @@
     ansible_host: "{{ prop_ipaddress }}"
   become: true
 
-- name: Mount SMB volume
-  ansible.posix.mount:
-    src: "{{ item.source }}"
-    path: "{{ item.path }}"
-    opts: 'rw,auto,vers=3,file_mode=0777,dir_mode=0777,dom=WORKGROUP,credentials=/home/{{ prop_admin_username }}/.{{ prop_basename }}/.smbcred'
-    fstype: cifs
-    state: mounted
-  loop: "{{ prop_smb_mounts }}"
-  vars:
-    ansible_connection: ssh
-    ansible_host: "{{ prop_ipaddress }}"
-  become: true
+# - name: Mount SMB volume
+#   ansible.posix.mount:
+#     src: "{{ item.source }}"
+#     path: "{{ item.path }}"
+#     opts: 'rw,auto,vers=3,file_mode=0777,dir_mode=0777,dom=WORKGROUP,credentials=/home/{{ prop_admin_username }}/.{{ prop_basename }}/.smbcred'
+#     fstype: cifs
+#     state: mounted
+#   loop: "{{ prop_smb_mounts }}"
+#   vars:
+#     ansible_connection: ssh
+#     ansible_host: "{{ prop_ipaddress }}"
+#   become: true
 
+- ansible.builtin.include_role:
+    name: alex.debian13.mountsmbshares
 

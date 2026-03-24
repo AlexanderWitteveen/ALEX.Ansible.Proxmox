@@ -180,8 +180,21 @@
     ansible_host: "{{ prop_ipaddress }}"
   become: true
 
-- ansible.builtin.include_role: # knownoshost
+- ansible.builtin.include_role: # create datafolders
+    name: alex.debian13.datafolders
+  vars:
+    args_datafolder_local: 
+      - name: scripts
+      - name: certificates
+
+- ansible.builtin.include_role:  # configure SMB
     name: alex.proxmox.configuresmb
+
+- ansible.builtin.include_role:
+    name: alex.debian13.scripts
+
+- ansible.builtin.include_role:
+    name: alex.debian13.cronjobs
 
 - name: Install expect
   ansible.builtin.apt:

@@ -1,6 +1,6 @@
 ---
 
-- name: "Playbook: Export Base VM [{{ prop_proxmox_vmid }}]"
+- name: "Playbook: Export Base VM [{{ args_host }}]"
   hosts: "{{ args_host }}"
   gather_facts: false
 

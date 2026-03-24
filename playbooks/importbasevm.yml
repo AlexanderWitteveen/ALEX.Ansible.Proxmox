@@ -1,6 +1,6 @@
 ---
 
-- name: "Playbook: Import Base VM [{{ prop_proxmox_vmid }}]"
+- name: "Playbook: Import Base VM [{{ args_host }}]"
   hosts: "{{ args_host }}"
   gather_facts: false
 
