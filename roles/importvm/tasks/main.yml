@@ -44,7 +44,7 @@
     echo "}"
   args:
     executable: /bin/bash
-  register: tags
+  register: taglist
   vars:
     ansible_connection: ssh
     ansible_host: "{{ prop_proxmox_host }}"
@@ -52,7 +52,7 @@
 
 - name: Set Arch [{{ prop_proxmox_vmid }}]
   shell: |
-    echo '{{ tags.stdout }}' | jq -r '.arch'
+    echo '{{ taglist.stdout }}' | jq -r '.arch'
   args:
     executable: /bin/bash
   register: prop_arch_string
@@ -62,7 +62,7 @@
 
 - name: Set OS [{{ prop_proxmox_vmid }}]
   shell: |
-    echo '{{ tags.stdout }}' | jq -r '.os'
+    echo '{{ taglist.stdout }}' | jq -r '.os'
   args:
     executable: /bin/bash
   register: prop_os_string
