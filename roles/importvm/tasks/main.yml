@@ -3,10 +3,10 @@
 - ansible.builtin.include_role:
     name: alex.proxmox.removevm
 
-- name: Restore [{{ prop_proxmox_vmid }}]
+- name: Restore [{{ prop_proxmox.vmid }}]
   shell: |
-    path=$( ls -Art /mnt/build-dev/vm-qemu-*/vzdump-qemu-{{ prop_proxmox_templateid }}-*.vma.zst | tail -n 1 )
-    qmrestore $path {{ prop_proxmox_vmid }}
+    path=$( ls -Art /mnt/build-dev/vm-qemu-*/vzdump-qemu-{{ prop_proxmox.templateid }}-*.vma.zst | tail -n 1 )
+    qmrestore $path {{ prop_proxmox.vmid }}
     if [ "$?" -eq "0" ]; then
       echo "CHANGED"
     else
@@ -21,12 +21,12 @@
   failed_when: '"FAILED" in result.stdout'
   vars:
     ansible_connection: ssh
-    ansible_host: "{{ prop_proxmox_host }}"
+    ansible_host: "{{ prop_proxmox.host }}"
   become: true
 
-- name: Read tags [{{ prop_proxmox_vmid }}]
+- name: Read tags [{{ prop_proxmox.vmid }}]
   shell: |
-    tagstring=$( qm config {{ prop_proxmox_vmid }} | grep tags )
+    tagstring=$( qm config {{ prop_proxmox.vmid }} | grep tags )
     IFS=' ' read -ra tags1 <<< "$tagstring"
     IFS=';' read -ra tags2 <<< "${tags1[1]}"
     break=""
@@ -47,10 +47,10 @@
   register: taglist
   vars:
     ansible_connection: ssh
-    ansible_host: "{{ prop_proxmox_host }}"
+    ansible_host: "{{ prop_proxmox.host }}"
   become: true
 
-- name: Set Arch [{{ prop_proxmox_vmid }}]
+- name: Set Arch [{{ prop_proxmox.vmid }}]
   shell: |
     echo '{{ taglist.stdout }}' | jq -r '.arch'
   args:
@@ -60,7 +60,7 @@
     ansible_connection: local
   become: true
 
-- name: Set OS [{{ prop_proxmox_vmid }}]
+- name: Set OS [{{ prop_proxmox.vmid }}]
   shell: |
     echo '{{ taglist.stdout }}' | jq -r '.os'
   args:
@@ -72,8 +72,12 @@
 
 - name: Setting facts
   ansible.builtin.set_fact:
-    prop_arch: "{{ prop_arch_string.stdout }}"
-    prop_os: "{{ prop_os_string.stdout }}"
+    prop_device:
+      arch: "{{ prop_arch_string.stdout }}"
+    prop_os:
+      name: "{{ prop_os.name | default('unknown') }}"
+      version: "{{ prop_os.version | default('unknown') }}"
+      short: "{{ prop_os_string.stdout }}"
 
 - ansible.builtin.include_role:
     name: alex.proxmox.setmeta

@@ -3,9 +3,9 @@
 # - ansible.builtin.include_role:
 #     name: alex.proxmox.statusvm
 
-- name: Set processor [{{ prop_proxmox_vmid }}]
+- name: Set processor [{{ prop_proxmox.vmid }}]
   shell: |
-    qm set {{ prop_proxmox_vmid }} --cpu cputype=host 
+    qm set {{ prop_proxmox.vmid }} --cpu cputype=host 
     if [ "$?" -eq "0" ]; then
       echo "CHANGED"
     else
@@ -18,12 +18,12 @@
   failed_when: '"FAILED" in result.stdout'
   vars:
     ansible_connection: ssh
-    ansible_host: "{{ prop_proxmox_host }}"
+    ansible_host: "{{ prop_proxmox.host }}"
   become: true
 
-- name: Set cores [{{ prop_proxmox_vmid }}]
+- name: Set cores [{{ prop_proxmox.vmid }}]
   shell: |
-    qm set {{ prop_proxmox_vmid }} --cores {{ prop_vm_cores }}
+    qm set {{ prop_proxmox.vmid }} --cores {{ prop_vm.cores }}
     if [ "$?" -eq "0" ]; then
       echo "CHANGED"
     else
@@ -36,12 +36,12 @@
   failed_when: '"FAILED" in result.stdout'
   vars:
     ansible_connection: ssh
-    ansible_host: "{{ prop_proxmox_host }}"
+    ansible_host: "{{ prop_proxmox.host }}"
   become: true
 
-- name: Set memory [{{ prop_proxmox_vmid }}]
+- name: Set memory [{{ prop_proxmox.vmid }}]
   shell: |
-    qm set {{ prop_proxmox_vmid }} --memory {{ prop_vm_memory }}
+    qm set {{ prop_proxmox.vmid }} --memory {{ prop_vm.memory }}
     if [ "$?" -eq "0" ]; then
       echo "CHANGED"
     else
@@ -54,17 +54,17 @@
   failed_when: '"FAILED" in result.stdout'
   vars:
     ansible_connection: ssh
-    ansible_host: "{{ prop_proxmox_host }}"
+    ansible_host: "{{ prop_proxmox.host }}"
   become: true
 
-- name: Set networks [{{ prop_proxmox_vmid }}]
+- name: Set networks [{{ prop_proxmox.vmid }}]
   shell: |
     net=model=virtio,macaddr={{ item.mac }},bridge=vmbr0,firewall=1
     if [ "{{ item.vlan }}" -gt "0" ]; then
       net=$net,tag={{ item.vlan }}
     fi
     echo $net
-    qm set {{ prop_proxmox_vmid }} --{{ item.name }} $net
+    qm set {{ prop_proxmox.vmid }} --{{ item.name }} $net
     if [ "$?" -eq "0" ]; then
       echo "CHANGED"
     else
@@ -73,18 +73,18 @@
   args:
     executable: /bin/bash
   register: result
-  loop: "{{ prop_vm_network }}"
+  loop: "{{ prop_networkinterfaces }}"
   changed_when: '"CHANGED" in result.stdout'
   failed_when: '"FAILED" in result.stdout'
   vars:
     ansible_connection: ssh
-    ansible_host: "{{ prop_proxmox_host }}"
+    ansible_host: "{{ prop_proxmox.host }}"
   become: true
 
 
-- name: Set boot start [{{ prop_proxmox_vmid }}]
+- name: Set boot start [{{ prop_proxmox.vmid }}]
   shell: |
-    qm set {{ prop_proxmox_vmid }} --onboot {{ prop_vm_start_boot }}
+    qm set {{ prop_proxmox.vmid }} --onboot {{ prop_vm.start_boot }}
     if [ "$?" -eq "0" ]; then
       echo "CHANGED"
     else
@@ -97,13 +97,13 @@
   failed_when: '"FAILED" in result.stdout'
   vars:
     ansible_connection: ssh
-    ansible_host: "{{ prop_proxmox_host }}"
+    ansible_host: "{{ prop_proxmox.host }}"
     ansible_python_interpreter: /alex/python/venv/bin/python3
   become: true
 
-- name: Set usb [{{ prop_proxmox_vmid }}]
+- name: Set usb [{{ prop_proxmox.vmid }}]
   shell: |
-    qm set {{ prop_proxmox_vmid }} --{{ item.name }} host={{ item.device }}
+    qm set {{ prop_proxmox.vmid }} --{{ item.name }} host={{ item.device }}
     if [ "$?" -eq "0" ]; then
       echo "CHANGED"
     else
@@ -117,13 +117,13 @@
   failed_when: '"FAILED" in result.stdout'
   vars:
     ansible_connection: ssh
-    ansible_host: "{{ prop_proxmox_host }}"
+    ansible_host: "{{ prop_proxmox.host }}"
     ansible_python_interpreter: /alex/python/venv/bin/python3
   become: true
 
-- name: Set pci [{{ prop_proxmox_vmid }}]
+- name: Set pci [{{ prop_proxmox.vmid }}]
   shell: |
-    qm set {{ prop_proxmox_vmid }} --{{ item.name }} host={{ item.id }}
+    qm set {{ prop_proxmox.vmid }} --{{ item.name }} host={{ item.id }}
     if [ "$?" -eq "0" ]; then
       echo "CHANGED"
     else
@@ -137,13 +137,13 @@
   failed_when: '"FAILED" in result.stdout'
   vars:
     ansible_connection: ssh
-    ansible_host: "{{ prop_proxmox_host }}"
+    ansible_host: "{{ prop_proxmox.host }}"
     ansible_python_interpreter: /alex/python/venv/bin/python3
   become: true
 
-- name: Set serial [{{ prop_proxmox_vmid }}]
+- name: Set serial [{{ prop_proxmox.vmid }}]
   shell: |
-    qm set {{ prop_proxmox_vmid }} --{{ item.name }} {{ item.type }}
+    qm set {{ prop_proxmox.vmid }} --{{ item.name }} {{ item.type }}
     if [ "$?" -eq "0" ]; then
       echo "CHANGED"
     else
@@ -157,12 +157,12 @@
   failed_when: '"FAILED" in result.stdout'
   vars:
     ansible_connection: ssh
-    ansible_host: "{{ prop_proxmox_host }}"
+    ansible_host: "{{ prop_proxmox.host }}"
   become: true
 
-- name: Set agent [{{ prop_proxmox_vmid }}]
+- name: Set agent [{{ prop_proxmox.vmid }}]
   shell: |
-    qm set {{ prop_proxmox_vmid }} --agent enabled=0
+    qm set {{ prop_proxmox.vmid }} --agent enabled=0
     if [ "$?" -eq "0" ]; then
       echo "CHANGED"
     else
@@ -175,5 +175,5 @@
   failed_when: '"FAILED" in result.stdout'
   vars:
     ansible_connection: ssh
-    ansible_host: "{{ prop_proxmox_host }}"
+    ansible_host: "{{ prop_proxmox.host }}"
   become: true

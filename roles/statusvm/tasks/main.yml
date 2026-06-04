@@ -3,9 +3,9 @@
 - ansible.builtin.include_role: # knownhost
     name: alex.base.knownproxmoxhost
 
-- name: Status [{{ prop_proxmox_vmid }}]
+- name: Status [{{ prop_proxmox.vmid }}]
   shell: |
-    status=$(qm status {{ prop_proxmox_vmid }} 2> /dev/null )
+    status=$(qm status {{ prop_proxmox.vmid }} 2> /dev/null )
     if [ $? -ne 0 ] ; then
       echo NOTEXIST
     else
@@ -16,7 +16,7 @@
       else
         echo NOTIMPLEMENTED
       fi
-      template=$(qm config {{ prop_proxmox_vmid }} 2> /dev/null | grep "^template:" | wc -l)
+      template=$(qm config {{ prop_proxmox.vmid }} 2> /dev/null | grep "^template:" | wc -l)
       if [ $template -eq 1 ] ; then
         echo TEMPLATE
       fi
@@ -28,5 +28,5 @@
   failed_when: '"NOTIMPLEMENTED" in result_status.stdout'
   vars:
     ansible_connection: ssh
-    ansible_host: "{{ prop_proxmox_host }}"
+    ansible_host: "{{ prop_proxmox.host }}"
   become: true

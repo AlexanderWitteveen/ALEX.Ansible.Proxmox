@@ -7,13 +7,12 @@
   ansible.builtin.service:
     name: "{{ item }}"
     state: stopped
-  become: true
   loop:
     - pve-cluster
     - corosync
   vars:
     ansible_connection: ssh
-    ansible_host: "{{ prop_ipaddress }}"
+    ansible_host: "{{ prop_host.ipaddress }}"
   become: true
 
 - name: Restart local mode
@@ -28,7 +27,7 @@
   failed_when: '("Error" in expectresult.stdout) or ("Host key verification failed." in expectresult.stdout)'
   vars:
     ansible_connection: ssh
-    ansible_host: "{{ prop_ipaddress }}"
+    ansible_host: "{{ prop_host.ipaddress }}"
   become: true
 
 
@@ -43,7 +42,7 @@
 #     - /etc/apt/sources.list.d/pve-enterprise.list
 #   vars:
 #     ansible_connection: ssh
-#     ansible_host: "{{ prop_ipaddress }}"
+#     ansible_host: "{{ prop_host.ipaddress }}"
 #   become: true
 
 

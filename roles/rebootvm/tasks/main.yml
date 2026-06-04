@@ -3,14 +3,14 @@
 - ansible.builtin.include_role:
     name: alex.proxmox.statusvm
 
-- name: shutdown [{{ prop_proxmox_vmid }}]
+- name: shutdown [{{ prop_proxmox.vmid }}]
   shell: |
-    qm shutdown {{ prop_proxmox_vmid }} --skiplock --forceStop
+    qm shutdown {{ prop_proxmox.vmid }} --skiplock --forceStop
     if [ "$?" -ne "0" ]; then
       echo "FAILED"
       exit 1
     fi
-    qm wait {{ prop_proxmox_vmid }}
+    qm wait {{ prop_proxmox.vmid }}
     if [ "$?" -eq "0" ]; then
       echo "CHANGED"
     else
@@ -24,7 +24,7 @@
   failed_when: '"FAILED" in result.stdout'
   vars:
     ansible_connection: ssh
-    ansible_host: "{{ prop_proxmox_host }}"
+    ansible_host: "{{ prop_proxmox.host }}"
   become: true
 
 - ansible.builtin.include_role:
@@ -32,14 +32,14 @@
 
 
 
-# - name: reboot [{{ prop_proxmox_vmid }}]
+# - name: reboot [{{ prop_proxmox.vmid }}]
 #   shell: |
-#     qm reboot {{ prop_proxmox_vmid }}
+#     qm reboot {{ prop_proxmox.vmid }}
 #     if [ "$?" -ne "0" ]; then
 #       echo "FAILED"
 #       exit 1
 #     fi
-#     qm wait {{ prop_proxmox_vmid }}
+#     qm wait {{ prop_proxmox.vmid }}
 #     if [ "$?" -eq "0" ]; then
 #       echo "CHANGED"
 #     else

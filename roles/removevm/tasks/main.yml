@@ -3,9 +3,9 @@
 - ansible.builtin.include_role:
     name: alex.proxmox.stopvm
 
-- name: Remove [{{ prop_proxmox_vmid }}]
+- name: Remove [{{ prop_proxmox.vmid }}]
   shell: |
-    qm destroy {{ prop_proxmox_vmid }} --skiplock --purge
+    qm destroy {{ prop_proxmox.vmid }} --skiplock --purge
     if [ "$?" -eq "0" ]; then
       echo "CHANGED"
     else
@@ -19,5 +19,5 @@
   failed_when: '"FAILED" in result.stdout'
   vars:
     ansible_connection: ssh
-    ansible_host: "{{ prop_proxmox_host }}"
+    ansible_host: "{{ prop_proxmox.host }}"
   become: true

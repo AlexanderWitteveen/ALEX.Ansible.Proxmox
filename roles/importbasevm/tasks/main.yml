@@ -3,9 +3,9 @@
 - ansible.builtin.include_role:
     name: alex.proxmox.removevm
 
-- name: Restore [{{ prop_proxmox_vmid }}]
+- name: Restore [{{ prop_proxmox.vmid }}]
   shell: |
-    qmrestore /mnt/build-dev/vm-qemu-base/vzdump-qemu-{{ prop_proxmox_vmid }}-*.vma.zst {{ prop_proxmox_vmid }}
+    qmrestore /mnt/build-dev/vm-qemu-base/vzdump-qemu-{{ prop_proxmox.vmid }}-*.vma.zst {{ prop_proxmox.vmid }}
     if [ "$?" -eq "0" ]; then
       echo "CHANGED"
     else
@@ -20,7 +20,7 @@
   failed_when: '"FAILED" in result.stdout'
   vars:
     ansible_connection: ssh
-    ansible_host: "{{ prop_proxmox_host }}"
+    ansible_host: "{{ prop_proxmox.host }}"
   become: true
 
 - ansible.builtin.include_role:

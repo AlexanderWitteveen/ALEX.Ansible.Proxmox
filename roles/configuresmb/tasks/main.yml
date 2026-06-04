@@ -11,7 +11,7 @@
     - smbclient
     - samba
     ansible_connection: ssh
-    ansible_host: "{{ prop_ipaddress }}"
+    ansible_host: "{{ prop_host.ipaddress }}"
   become: true
 
 - name: create directory
@@ -20,7 +20,7 @@
     path: "/home/{{ prop_admin_username }}/.{{ prop_basename }}"
   vars:
     ansible_connection: ssh
-    ansible_host: "{{ prop_ipaddress }}"
+    ansible_host: "{{ prop_host.ipaddress }}"
   become: true
 
 - name: add smb user
@@ -28,11 +28,11 @@
     ( echo "{{ prop_admin_password }}" ; echo "{{ prop_admin_password }}" ) | smbpasswd -s -a {{ prop_admin_username }}
     echo "CHANGED"
   register: result
-  loop: "{{ prop_smb_shares }}"
+  loop: "{{ prop_os.smb_shares }}"
   changed_when: '"CHANGED" in result.stdout'
   vars:
     ansible_connection: ssh
-    ansible_host: "{{ prop_ipaddress }}"
+    ansible_host: "{{ prop_host.ipaddress }}"
   become: true
 
 - name: Template smb.conf file
@@ -44,7 +44,7 @@
     mode: '0644'
   vars:
     ansible_connection: ssh
-    ansible_host: "{{ prop_ipaddress }}"
+    ansible_host: "{{ prop_host.ipaddress }}"
   become: true
 
 - name: add smb share
@@ -70,11 +70,11 @@
       echo "CHANGED"
     fi
   register: result
-  loop: "{{ prop_smb_shares }}"
+  loop: "{{ prop_os.smb_shares }}"
   changed_when: '"CHANGED" in result.stdout'
   vars:
     ansible_connection: ssh
-    ansible_host: "{{ prop_ipaddress }}"
+    ansible_host: "{{ prop_host.ipaddress }}"
   become: true
 
 - name: Template credential file
@@ -86,7 +86,7 @@
     mode: '0400'
   vars:
     ansible_connection: ssh
-    ansible_host: "{{ prop_ipaddress }}"
+    ansible_host: "{{ prop_host.ipaddress }}"
   become: true
 
 # - name: Mount SMB volume
@@ -99,7 +99,7 @@
 #   loop: "{{ prop_smb_mounts }}"
 #   vars:
 #     ansible_connection: ssh
-#     ansible_host: "{{ prop_ipaddress }}"
+#     ansible_host: "{{ prop_host.ipaddress }}"
 #   become: true
 
 - ansible.builtin.include_role:

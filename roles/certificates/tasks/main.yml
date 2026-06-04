@@ -9,7 +9,7 @@
     mode: 0755
   vars:
     ansible_connection: ssh
-    ansible_host: "{{ prop_ipaddress }}"
+    ansible_host: "{{ prop_host.ipaddress }}"
   become: true
 
 - name: Copy CA certificates
@@ -22,7 +22,7 @@
   register: cacertresult1
   vars:
     ansible_connection: ssh
-    ansible_host: "{{ prop_ipaddress }}"
+    ansible_host: "{{ prop_host.ipaddress }}"
   become: true
 
 - name: create key
@@ -34,40 +34,40 @@
     executable: /bin/bash
   vars:
     ansible_connection: ssh
-    ansible_host: "{{ prop_ipaddress }}"
+    ansible_host: "{{ prop_host.ipaddress }}"
   become: true
 
 - name: create certificate signing request
   shell: |
-    openssl req -new -key "/{{ prop_basename }}/certificates/host.key" -out "/{{ prop_basename }}/certificates/host.csr" -subj "/CN=ALEX" -addext "subjectAltName = DNS:{{ prop_hostname }},DNS:localhost,IP:127.0.0.1,IP:{{ prop_ipaddress }}"
+    openssl req -new -key "/{{ prop_basename }}/certificates/host.key" -out "/{{ prop_basename }}/certificates/host.csr" -subj "/CN=ALEX" -addext "subjectAltName = DNS:{{ prop_host.hostname }},DNS:localhost,IP:127.0.0.1,IP:{{ prop_host.ipaddress }}"
   args:
     executable: /bin/bash
   vars:
     ansible_connection: ssh
-    ansible_host: "{{ prop_ipaddress }}"
+    ansible_host: "{{ prop_host.ipaddress }}"
   become: true
 
 - name: Copy CSR
   ansible.builtin.fetch:
     src: "/{{ prop_basename }}/certificates/host.csr"
-    dest: "/tmp/{{ prop_hostname }}.csr"
+    dest: "/tmp/{{ prop_host.hostname }}.csr"
     flat: yes
   vars:
     ansible_connection: ssh
-    ansible_host: "{{ prop_ipaddress }}"
+    ansible_host: "{{ prop_host.ipaddress }}"
   become: true
 
 - name: Sign certificate
   shell: |
     step certificate sign \
-    "/tmp/{{ prop_hostname }}.csr" \
+    "/tmp/{{ prop_host.hostname }}.csr" \
     "{{ prop_certificates_sources }}/{{ prop_certificates_ca }}.cer" \
     "{{ prop_certificates_sources }}/{{ prop_certificates_ca }}.key" \
-    --set CommonName={{ prop_hostname }} \
+    --set CommonName={{ prop_host.hostname }} \
     --template "{{ prop_certificates_sources }}/{{ prop_certificates_server_template }}" \
     --set-file "{{ prop_certificates_sources }}/{{ prop_certificates_org_settings }}" \
     --not-after 8766h \
-    --bundle > "/tmp/{{ prop_hostname }}.cer"
+    --bundle > "/tmp/{{ prop_host.hostname }}.cer"
   args:
     executable: /bin/bash
   connection: local
@@ -75,14 +75,14 @@
 
 - name: Copy certificate
   copy:
-    src: "/tmp/{{ prop_hostname }}.cer"
+    src: "/tmp/{{ prop_host.hostname }}.cer"
     dest: "/{{ prop_basename }}/certificates/host.cer"
     owner: root
     group: root
     mode: 0755
   vars:
     ansible_connection: ssh
-    ansible_host: "{{ prop_ipaddress }}"
+    ansible_host: "{{ prop_host.ipaddress }}"
   become: true
 
 - name: Set certificate
@@ -92,7 +92,7 @@
     executable: /bin/bash
   vars:
     ansible_connection: ssh
-    ansible_host: "{{ prop_ipaddress }}"
+    ansible_host: "{{ prop_host.ipaddress }}"
   become: true
 
 # - name: Update local certificate
@@ -102,5 +102,5 @@
 #     executable: /bin/bash
 #   vars:
 #     ansible_connection: ssh
-#     ansible_host: "{{ prop_ipaddress }}"
+#     ansible_host: "{{ prop_host.ipaddress }}"
 #   become: true

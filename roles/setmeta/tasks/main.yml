@@ -1,40 +1,39 @@
 ---
 
-- name: Set Name [{{ prop_proxmox_vmid }}]
+- name: Set Name [{{ prop_proxmox.vmid }}]
   shell: |
-    name="{{ prop_hostname }}-{{ prop_os }}-{{ prop_arch }}-{{ prop_environment }}-{{ prop_proxmox_name_description }}"
-    qm set {{ prop_proxmox_vmid }} --name "$name"
+    name="{{ prop_host.hostname }}-{{ prop_os.short }}-{{ prop_device.arch }}-{{ prop_cmdb.environment }}-{{ prop_proxmox.description }}"
+    qm set {{ prop_proxmox.vmid }} --name "$name"
   args:
     executable: /bin/bash
   vars:
     ansible_connection: ssh
-    ansible_host: "{{ prop_proxmox_host }}"
+    ansible_host: "{{ prop_proxmox.host }}"
   become: true
 
+# - name: Set Tags [{{ prop_proxmox.vmid }}]
+#   shell: |
+#     tags="arch-{{ prop_device.arch }};os-{{ prop_os.short }};env-{{ prop_cmdb.environment }};type-{{ prop_proxmox.type }}"
+#     qm set {{ prop_proxmox.vmid }} --tags $tags
+#   args:
+#     executable: /bin/bash
+#   vars:
+#     ansible_connection: ssh
+#     ansible_host: "{{ prop_proxmox.host }}"
+#   become: true
 
-- name: Set Tags [{{ prop_proxmox_vmid }}]
+- name: Set Notes [{{ prop_proxmox.vmid }}]
   shell: |
-    tags="arch-{{ prop_arch }};os-{{ prop_os }};env-{{ prop_environment }};type-{{ prop_proxmox_type }}"
-    qm set {{ prop_proxmox_vmid }} --tags $tags
-  args:
-    executable: /bin/bash
-  vars:
-    ansible_connection: ssh
-    ansible_host: "{{ prop_proxmox_host }}"
-  become: true
-
-- name: Set Notes [{{ prop_proxmox_vmid }}]
-  shell: |
-    description=$'# {{ prop_hostname }}  \n{{ prop_description }}  \n{{ prop_arch }}  \n{{ prop_os }}  \n{{ prop_ipaddress }}  \n{{ prop_environment }}  \n'
+    description=$'# {{ prop_host.hostname }}  \n{{ prop_cmdb.description }}  \n{{ prop_device.arch }}  \n{{ prop_os.short }}  \n{{ prop_host.ipaddress }}  \n{{ prop_cmdb.environment }}  \n'
     description+="$(date)"
     description+=$'  \n'
     if [ "{{ prop_weburl | default('null') }}" != "null" ]; then
       description+=$'<a href="{{ prop_weburl | default("null") }}" target="_blank">web</a>  \n'
     fi
-    qm set {{ prop_proxmox_vmid }} --description "$description"
+    qm set {{ prop_proxmox.vmid }} --description "$description"
   args:
     executable: /bin/bash
   vars:
     ansible_connection: ssh
-    ansible_host: "{{ prop_proxmox_host }}"
+    ansible_host: "{{ prop_proxmox.host }}"
   become: true
