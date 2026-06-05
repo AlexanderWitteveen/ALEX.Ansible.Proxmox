@@ -74,10 +74,23 @@
   ansible.builtin.set_fact:
     prop_device:
       arch: "{{ prop_arch_string.stdout }}"
+
+- name: Setting facts
+  ansible.builtin.set_fact:
     prop_os:
-      name: "{{ prop_os.name | default('unknown') }}"
-      version: "{{ prop_os.version | default('unknown') }}"
-      short: "{{ prop_os_string.stdout }}"
+      short: "empty"
+  when: prop_os is not defined
+
+- name: Update facts
+  ansible.utils.update_fact:
+    updates:
+      - path: prop_os.short
+        value: "{{ prop_os_string.stdout }}"
+  register: prop_os_updated
+
+- name: Setting facts
+  ansible.builtin.set_fact:
+    prop_os: "{{ prop_os_updated.prop_os }}"
 
 - ansible.builtin.include_role:
     name: alex.proxmox.setmeta
