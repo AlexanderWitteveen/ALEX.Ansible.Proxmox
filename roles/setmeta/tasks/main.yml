@@ -2,7 +2,7 @@
 
 - name: Set Name [{{ prop_proxmox.vmid }}]
   shell: |
-    name="{{ prop_host.hostname }}-{{ prop_os.short }}-{{ prop_device.arch }}-{{ prop_cmdb.environment }}-{{ prop_proxmox.description }}"
+    name="{{ prop_host.hostname }}-{{ prop_os.short | default("unknown") }}-{{ prop_device.arch | default("unknown") }}-{{ prop_cmdb.environment }}-{{ prop_proxmox.description }}"
     qm set {{ prop_proxmox.vmid }} --name "$name"
   args:
     executable: /bin/bash
@@ -24,7 +24,7 @@
 
 - name: Set Notes [{{ prop_proxmox.vmid }}]
   shell: |
-    description=$'# {{ prop_host.hostname }}  \n{{ prop_cmdb.description }}  \n{{ prop_device.arch }}  \n{{ prop_os.short }}  \n{{ prop_host.ipaddress }}  \n{{ prop_cmdb.environment }}  \n'
+    description=$'# {{ prop_host.hostname }}  \n{{ prop_cmdb.description }}  \n{{ prop_device.arch | default("unknown")}}  \n{{ prop_os.short | default("unknown") }}  \n{{ prop_host.ipaddress }}  \n{{ prop_cmdb.environment }}  \n'
     description+="$(date)"
     description+=$'  \n'
     if [ "{{ prop_weburl | default('null') }}" != "null" ]; then
